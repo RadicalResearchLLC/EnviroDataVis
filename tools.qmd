@@ -1,9 +1,9 @@
 # R and RStudio Installation and Overview {#sec-appendix-tools}
 
 [R](https://www.r-project.org/) is a free software environment for statistical computing and graphics.  
-Current version 4.2.1 "Funny-Looking Kid" was released June 23, 2022.
+Current version 4.2.2 "Innocent and Trusting" was released October 31, 2022.
 
-[RStudio](https://www.rstudio.com/products/rstudio/#rstudio-desktop) is an integrated development environment (IDE) for R. It is available in open source and commercial editions.  Current version is 2022.07.1-554 'Spotted Wakerobin" was released July 25, 2022.
+[RStudio](https://www.rstudio.com/products/rstudio/#rstudio-desktop) is an integrated development environment (IDE) for R. It is available in open source and commercial editions.  Current version is RStudio 2022.12.0+353 "Elsbeth Geranium" and was released December 15, 2022.
 
 These tools will be the primary software used in this course to develop environmental visualizations.  
 
@@ -59,6 +59,8 @@ Select the **Tools** menu, followed by **Global Options** in the dropdown Tools 
 ::: callout-tip
 ## Do I still need to download R?
 
-Even if you use RStudio, you'll still need to download R to your computer. RStudio helps you use the version of R that lives on your computer, but it doesn't come with a version of R on its own.
+Even if you use RStudio, you'll still need to download R to your computer (or use R and RStudio cloud versions). RStudio helps you use the version of R that lives on your computer, but it doesn't come with a version of R on its own.
+
+I recommend downloading R and RStudio for compatibility, but the RStudio Cloud does exist and does mostly the same thing. I will be less helpful at supporting the Cloud version for this class.
 :::
 

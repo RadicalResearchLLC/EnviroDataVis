@@ -77,7 +77,7 @@ This course will be attempting to engage in _ungrading_ to give scholars more co
 Assignments <- c('Group Project - data visualization', 'Individual project 1 - written critique of existing visualization', 
                 'Individual Project 2 - - EJ tool remix',
                 'Individual Project 3 - data visualization',
-                'Presentation on EJ tools',
+                'Group Presentation on EJ tools',
                 'Classroom participation',
                 'Extra Credit')
 Points <- c(250, 150, 150, 150, 200, 100, 50)
@@ -96,9 +96,9 @@ The best way to get a hold of me is email: michael_mccarthy\@pitzer.edu You are 
 
 ## Course materials
 
-All course materials will be hosted on [github](https://github.com/RadicalResearchLLC/EDVcourse).
+All course materials will be hosted on [github](https://github.com/RadicalResearchLLC/EnviroDataVis).
 
-Go [here](http://radicalresearch.llc/EDVcourse/) to see all course materials.
+Go [here](http://radicalresearch.llc/EnviroDataVis/) to see all course materials.
 
 ## COVID policy
 
