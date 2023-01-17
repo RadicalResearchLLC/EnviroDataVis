@@ -46,4 +46,4 @@ Write a two-page paper (12-point font or less) describing the visualization and 
 4. Features that provide interesting structure to the data and make it more informative
 5. Features that you find aid in communicating knowledge or help **tell the story**.  
 
-Assignment is due September 28th, 2022 at the beginning of class.  Assignments can be emailed or physically turned in. This assignment is worth 100 points. Spelling, grammar, and sentence structure will be a minor component of the score (~10 points).    
+Assignment is due September 28th, 2022 at the beginning of class.  Assignments can be emailed or physically turned in. This assignment is worth 150 points. Spelling, grammar, and sentence structure will be a minor component of the score (~10 points).    
