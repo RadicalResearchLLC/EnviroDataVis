@@ -435,7 +435,7 @@ That map might look like @fig-DPM.
 ```{r}
 #| label: fig-DPM
 #| fig-cap: Leaflet map for Diesel PM percentile in Southern California
-#| echo: false
+#| echo: true
 
 palDPM <- colorNumeric(palette = 'YlOrBr', domain = SoCalEJ$DieselPM_P, n = 5)
 
