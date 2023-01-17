@@ -27,9 +27,9 @@ book:
 ##        - assignment2.qmd
  #   - part: data.qmd
   #    chapters:
-        - import.qmd
-        - export.qmd
-        - context.qmd
+  #      - import.qmd
+  #      - export.qmd
+  #      - context.qmd
   #      - import2.qmd
  #       - assignment3.qmd
  #   - part: projects.qmd
