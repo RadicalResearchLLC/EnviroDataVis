@@ -1,0 +1,55 @@
+# Assignments for Unit 2 - EJ {#sec-assignment2}
+
+::: {.callout-note appearance="simple"}
+This includes the list of assignments for Unit 2 - Environmental Justice
+:::
+
+```{r}
+#| label: tbl-unit2assignments
+#| tbl-cap: Assignments from Unit 2
+#| echo: false
+#| warning: false
+library(dplyr)
+library(kableExtra)
+
+assignment <- c('Wiki entry on Environmental Justice', 'EJScreen Exploration',
+                'CalEnviroScreen Exploration', 'Bullard et al., 2013 - Living on the Frontline of Environmental Assault', 'ProPublica - Sacrifice Zones',
+                'Importing Data in R - RMRWR - Chapter 5.1 and 5.2')
+due.Date <- c('Sept 21, 2022', 'Sept 23, 2022', 'Sept 23, 2022', 'Sept 28, 2022', 'Sept 30, 2022', 'Oct 5, 2022')
+source <- c('https://en.wikipedia.org/wiki/Environmental_justice',
+            'https://ejscreen.epa.gov/mapper/',     'https://oehha.ca.gov/calenviroscreen/report/calenviroscreen-40',
+            '', 'https://projects.propublica.org/toxmap/',
+            'https://www.bookdown.org/pdr_higgins/rmrwr/importing-your-data-into-r.html#reading-data-with-the-readr-package')
+
+unit2 <- data.frame(assignment, due.Date, source)# %>% 
+
+unit2 %>% mutate(link = cell_spec(row.names(.), 'html', link = source)) %>% 
+  select(-source) %>% 
+  kableExtra::kable('html', escape = FALSE) %>% 
+  kable_material_dark(c('condensed', 'hover')) %>% 
+  column_spec(1, width = '20em') #%>
+
+```
+
+## Graded Assignment - EJ Visualization 
+
+Choose an environmental justice dataset. Three options we've discussed in class are:
+
+* [CalEnviroScreen](https://oehha.ca.gov/media/downloads/calenviroscreen/document/calenviroscreen40shpf2021shp.zip) - WARNING - 20+Mb zip file
+* [EPA EJScreen](https://gaftp.epa.gov/EJSCREEN/2021/EJSCREEN_2021_USPR.gdb.zip) - WARNING - 480+ Mb zip file
+* [CDC & ATSRD EJI tool](https://experience.arcgis.com/experience/10788c3e860d489e9e8a63a2238bb63d) - state level downloads - pick geoJSON format for maps!
+
+If data downloads are not something you are comfortable with, it is perfectly ok to use the in-class `SoCalEJ` dataset we have used as an example for in-class coding assignments. 
+
+The assignment is to create a new visualization or remix of a visualization using some of the data from the chosen EJ dataset. Visualization options include:
+
+1. Leaflet map(s)
+2. ggplot geom_sf map(s)
+3. ggplot figure(s) using some other geom (boxplot, point, bar, histogram)
+4. Some combination of 1, 2, and 3
+
+Points will be awarded for successfully generating a unique visualization, for having made four distinct visualization choices that are different from the standard tool, and for documenting those four unique features in the accompanying email, or as commented text within the `.R script` file you submit as part of the assignment. Note, the goal is to make an attractive figure, not a super ugly one.  Choices that do not aid in improving the feature for the audience will not be considered on point. For example, making the font enormous or tiny is a negative feature. 
+
+In other words, the goal is to make a _better_ visualization, not just a **different** visualization. When describing the four feature changes, describe in one sentence why the features _improve_ the visualization.  
+
+Assignment is currently due **October 14th, 2022** at the beginning of class. Please send the `.R script` and an exported visualization via email. This assignment is worth 100 points. Coding style will not be graded. Scripts will be used to reproduce the figure on my local machine - deviations between code and exported figure will likely result in deducted points. 
