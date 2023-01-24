@@ -16,14 +16,15 @@ book:
         - coding1.qmd
         - maps1.qmd
         - maps2.qmd
+        - chartJunk.qmd
         - assignment1.qmd
-#    - part: EJ.qmd
-#      chapters:
-#        - EJtheory.qmd
- #       - EJtools.qmd
- #       - EJdata.qmd
-#        - CCAEJ.qmd
-##        - assignment2.qmd
+    - part: EJ.qmd
+      chapters:
+       - EJtheory.qmd
+       - EJtools.qmd
+       - EJdata.qmd
+       - CCAEJ.qmd
+       - assignment2.qmd
  #   - part: data.qmd
   #    chapters:
   #      - import.qmd
@@ -42,7 +43,6 @@ book:
 #        - import3.qmd
 #        - maps3.qmd
  #      - School_near_rail.qmd
-#        - chartJunk.qmd
  #       - shiny.qmd
 #        - assignment4.qmd
   appendices: 

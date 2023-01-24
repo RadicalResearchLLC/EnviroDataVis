@@ -8,11 +8,11 @@ Visualization is a great place to start with R programming, because the payoff i
 
 The Tidyverse framework for visualization is shown in @fig-TidyverseFramework
 
-![Tidyverse](https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png){#fig-TidyverseFramework}
+![Tidyverse Data Science Framework](https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png){#fig-TidyverseFramework}
 
 ## Overview
 
-0. **Step 0** - [Install R and RStudio](http://radicalresearch.llc/EDVcourse/tools.html) - This was last week's assignment.
+0. **Step 0** - [Install R and RStudio](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/tools.html) - This was last week's assignment.
 1. **Step 1 - Open RStudio **  
   A. Put in a header comment - who, when, what, where  
   B. Install key packages  
@@ -63,7 +63,7 @@ Opening R will not load RStudio.
 @fig-annotated shows an annotated image of RStudio with the four panels labeled. In the default layout, the top-left is the _text editor panel_, the bottom-left is the _console panel_,
 the top-right is the _files, plots, and packages panel_, and the bottom-right is the _environment panel_.  
 
-![annotated.RStudio](images/annotatedRstudio.png){#fig-annotated}
+![Annotated example of RStudio IDE](images/annotatedRstudio.png){#fig-annotated}
 
 * Text Editor Panel - This is where you can enter code and have the editor color code it.
 * Console Panel - This is where errors and warnings appear when you run code. It can also be used to do direct coding, which I don't recommend for beginners.
@@ -118,7 +118,7 @@ In this case we're going go to do **SUPER EZ** mode. Acquiring and loading data 
 
 The `mpg` dataset is an example dataset included in the tidyverse package. No loading required.
 
-We can look at the first ten rows of the dataset by typing `mpg` and running that line of code.  
+We can look at the first rows of the dataset by typing `mpg` and running that line of code.  
 
 ```{r}
 #| label: display MPG
@@ -131,7 +131,7 @@ There are some key categorical variables (manufacturer, model, trans, cyl, class
 
 ### Step 3. Tidy the Data 
 
-This dataset is already reasonably tidy and so this step is not necessary for this example dataset. No munging is required.
+This dataset is already reasonably tidy and so this step is not necessary for this example dataset. No munging is required.  In general, this class will only incidentally teach how to tidy data to make it useful for visualization.
 
 ### Step 4. Visualize the Data 
 
@@ -156,7 +156,7 @@ We'll apply `ggplot()` for every visualization for now, and add at least one `ge
 
 Coding in the R tidyverse is a lot like writing a sentence, just in a foreign language that puts things in an order that may not be familiar.
 
-* Add a verb or two for an action - usually this is the function.
+* Add a verb or two for an action - usually this is the *function*.
 * Add an object to apply the action to - this is usually the dataframe, but can be a list or another type of data object.
 * Add adjectives and adverbs to modify the action or the object
 
@@ -164,7 +164,7 @@ Coding in the R tidyverse is a lot like writing a sentence, just in a foreign la
 
 ```{r}
 #| label: fig-basic
-#| fig-cap: "Basic visualization"
+#| fig-cap: "Basic scatter plot"
 #| echo: true
 
 ggplot(data = mpg) +
@@ -172,7 +172,7 @@ ggplot(data = mpg) +
 
 ```
 
-This is a basic point plot.  The x-axis shows engine displacement (Liters) for gasoline vehicles, and the y-axis shows highway driving fuel efficiency in miles per gallon.
+This is a basic scatter plot.  The x-axis shows engine displacement (Liters) for gasoline vehicles, and the y-axis shows highway driving fuel efficiency in miles per gallon.
 
 Three functions were used.  
 
@@ -191,6 +191,7 @@ ggplot(data = <DATA>) +
   <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
 
 ```
+
 @fig-line shows a basic line plot using `geom_line` instead of points. It is a visual abomination for this dataset.  We'll show why below.
 
 ```{r}
@@ -252,7 +253,7 @@ The last new thing I want to show is a `facet_wrap()` which will make this visua
 
 ```{r}
 #| label: fig-facet
-#| fig-cap: "Basic color visualization"
+#| fig-cap: "Basic facet (small multiples) visualization"
 #| echo: true
 
 ggplot(data = mpg) +
@@ -260,6 +261,7 @@ ggplot(data = mpg) +
   facet_wrap(~class)
 
 ```
+
 This helps us to better identify the individual classes of vehicles and understand the range of data available for each type of automobile.
 
 ### Putting It Together
