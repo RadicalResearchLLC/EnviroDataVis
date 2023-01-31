@@ -12,39 +12,25 @@ book:
     - intro.qmd
     - part: weather.qmd
       chapters:
-        - information.qmd
-        - coding1.qmd
-        - maps1.qmd
-        - maps2.qmd
-        - chartJunk.qmd
-        - assignment1.qmd
+      - information.qmd
+      - coding1.qmd
+      - maps1.qmd
+      - maps2.qmd
+      - chartJunk.qmd
+      - assignment1.qmd
     - part: EJ.qmd
       chapters:
-       - EJtheory.qmd
-       - EJtools.qmd
-       - EJdata.qmd
-       - CCAEJ.qmd
-       - assignment2.qmd
- #   - part: data.qmd
-  #    chapters:
-  #      - import.qmd
-  #      - export.qmd
-  #      - context.qmd
-  #      - import2.qmd
- #       - assignment3.qmd
- #   - part: projects.qmd
-#      chapters:
-#        - sacrifice.qmd
-#        - debt.qmd
-#        - markdown.qmd
-#        - research.qmd
-#        - munging.qmd
-#        - debrief.qmd
-#        - import3.qmd
-#        - maps3.qmd
- #      - School_near_rail.qmd
- #       - shiny.qmd
-#        - assignment4.qmd
+      - EJtheory.qmd
+      - context.qmd
+      - EJtools.qmd
+      - EJdata.qmd
+      - assignment2.qmd
+    - part: data.qmd
+      chapters:
+      - import2.qmd
+      - export.qmd
+      - munging.qmd
+      - import3.qmd
   appendices: 
     - syllabus.qmd  
     - tools.qmd
