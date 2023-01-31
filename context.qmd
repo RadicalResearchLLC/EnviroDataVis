@@ -1,0 +1,11 @@
+# Contextualizing Data {#sec-context}
+
+::: {.callout-note appearance="simple"}
+Today we have a guest lecture from Professor Susan Phillips, Director of the Robert Redford Conservancy and Associate Dean at Pitzer College    
+:::
+  
+## Speaker
+
+* Professor Susan Phillips - **Director of the [Robert Redford Conservancy](https://www.pitzer.edu/redfordconservancy/)** 
+ 
+
