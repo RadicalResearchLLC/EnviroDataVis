@@ -1,4 +1,4 @@
-# Importing Data - Part 3 {#sec-import3}
+# Importing Data - Part 2 {#sec-import3}
   
 ::: {.callout-note appearance="simple"}
 Today we will focus on the practice of importing data - with examples for class projects.

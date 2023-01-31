@@ -1,5 +1,5 @@
 
-# Exporting visualizations and data {#sec-export}
+# Exporting Visualizations and Data {#sec-export}
 
 ::: {.callout-note appearance="simple"}
 Today we focus on the practice of exporting completed visualizations  
