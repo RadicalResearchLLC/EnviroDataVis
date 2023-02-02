@@ -38,21 +38,129 @@ The second Tufte-ism is the ratio of data-ink. This is a quantitative measure in
 
 A simple example from the tidyverse would be to compare the default theme for a `ggplot()` with `theme_bw()` or `theme_minimal()`. 
 
-Here's [Figure 5-2](http://radicalresearch.llc/EDVcourse/maps2.html#fig-ggBasic) with the default theme. Notice all that background 'ink' in gray. 
+Here's [Figure 4-2](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/maps2.html#fig-ggBasic) with the default theme. Notice all that background 'ink' in gray. 
 
-Tufte would definitely prefer [Figure 5-5](http://radicalresearch.llc/EDVcourse/maps2.html#fig-ggMinimal) where we removed all that background and even the frame around the outside of the map.
+Tufte would definitely prefer [Figure 4-5](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/maps2.html#fig-ggMinimal) where we removed all that background and even the frame around the outside of the map.
 
-This is an aesthetic preference, especially in the modern era where almost all of the visualization we engage with is on a computer/tablet/phone. There is no amount of pixel-ink that is consumed. And in some cases the brightness of a white background may be antithetical and harmful, such as in the ProPublica Sacrifice Zone visualizations as shown in [Figure 17.2](http://radicalresearch.llc/EDVcourse/sacrifice.html#fig-proPublica).
+This is an aesthetic preference, especially in the modern era where almost all of the visualization we engage with is on a computer/tablet/phone. There is no amount of pixel-ink that is consumed. And in some cases the brightness of a white background may be antithetical and harmful, such as in the ProPublica Sacrifice Zone visualizations (Assignment 5 in Unit 2).
 
-## What makes a map in `leaflet` bad?
+## `ggthemes`
 
-Most of the teams are using `leaflet` maps.  What things in `leaflet` look bad and don't work?
+Let's make some variations on a figure.  
 
-Discuss
+```{r}
+#| eval: false
 
-## Class Exercise - work on group visualization
+install.packages('ggthemes')
+```
 
-Here's a framework for the final group visualization from the [Junk Charts Blog](https://junkcharts.typepad.com/junk_charts/junk-charts-trifecta-checkup-the-definitive-guide.html)
+```{r}
+#| label: load tidyverse and ggthemes
+
+library(tidyverse)
+library(ggthemes)
+
+```
+
+Let's use the mpg data. Let's remind ourselves what it contains.
+
+```{r}
+#| label: use mpg data
+#| echo: true
+
+head(mpg)
+
+```
+
+And now we use our code from [Figure 2.3](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/coding1.html#fig-basic) to make a really basic scatter plot of engine displacement and highway miles per gallon.  
+
+@fig-basic shows a very basic visualization.
+
+```{r}
+#| label: fig-basic
+#| fig-cap: "Basic scatter plot"
+#| echo: true
+
+ggplot(data = mpg) +
+  geom_point(aes(x = displ, y = hwy))
+
+```
+
+Now let's explore some `ggtheme` variations! Let's try `theme_economist()`
+
+@fig-economist shows that bit of code.  
+
+```{r}
+#| label: fig-economist
+#| fig-cap: "Basic scatter plot with economist theme"
+#| echo: true
+
+ggplot(data = mpg) +
+  geom_point(aes(x = displ, y = hwy)) +
+  theme_economist()
+
+```
+
+Now let's add in the colors for the individual points.  Remember how we did this in [Figure 2.6](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/coding1.html#fig-color)? Let's see how that looks within the economist theme.
+
+@fig-Ecolor shows the initial attempt.
+
+```{r}
+#| label: fig-Ecolor
+#| fig-cap: "Basic scatter plot with economist theme and colors"
+#| echo: true
+
+ggplot(data = mpg) +
+  geom_point(aes(x = displ, y = hwy, color = class))+
+  theme_economist()
+
+```
+
+However, if we look at the vignette for [`ggtheme`](https://mran.microsoft.com/snapshot/2017-02-04/web/packages/ggthemes/vignettes/ggthemes.html), it shows that there is a color scale for that theme as well.  Let's try to apply that.  
+
+@fig-econColor shows that result.
+
+```{r}
+#| label: fig-econColor
+#| fig-cap: "Basic scatter plot with economist theme and colors"
+#| echo: true
+
+ggplot(data = mpg) +
+  geom_point(aes(x = displ, y = hwy, color = class))+
+  theme_economist() +
+  scale_color_economist()
+
+```
+
+One last iteration - I hate the axis labels.  The `labs()` function allows us to rename labels and add titles.  We'll fix the **x**, **y** labels for now, but we can also do **title** and **color** to revise those. You'll get to try that yourself in a minute.
+
+@fig-ecoLabels shows an updated axis label figure with the economist theme.
+
+```{r}
+#| label: fig-ecoLabels
+#| fig-cap: "Basic scatter plot with economist theme colors and revised labels"
+#| echo: true
+
+ggplot(data = mpg) +
+  geom_point(aes(x = displ, y = hwy, color = class))+
+  theme_economist() +
+  scale_color_economist() +
+  labs(x = 'Engine displacement (Liters)', y = 'Highway (miles per gallon)')
+
+```
+
+### Class Exercise 1 - 
+
+Create a figure using a different theme from `ggthemes`
+1 - start with a basic visualization
+2 - pick a theme from [`ggthemes`](https://mran.microsoft.com/snapshot/2017-02-04/web/packages/ggthemes/vignettes/ggthemes.html) - or type `theme_` into RStudio text editor panel and a pop-up window should display your options.
+3 - test 4 themes and pick your favorite (most handsome or horrific)
+4 - implement an mpg figure with something other than `displ` and `hwy` as your columns and a theme - color scheme. Please do it stepwise!
+5 - share your discoveries with your adjacent colleagues
+
+## Class Exercise 2 - Visualization Theory
+
+Here's a framework for visualization from the [Junk Charts Blog](https://junkcharts.typepad.com/junk_charts/junk-charts-trifecta-checkup-the-definitive-guide.html).  Have a quick read of that blog.  
 
 - What is the practical question?
 - What does the data you have say about the question?
@@ -62,4 +170,9 @@ I would add:
 
 - Who is the audience for the visualization?
 
+## Discussion -
 
+Project work 
+
+- Individual visualization ideas
+- Group project interests

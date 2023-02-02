@@ -129,7 +129,7 @@ In this third example, we assign the image to the pointer Viz.  Then the `ggsave
 
 ## Leaflet Visualization - Static
 
-First, I am going to map Diesel PM for the SoCalEJ dataset in Leaflet, following the examples from @sec-import. @fig-DPM is the result.
+First, I am going to map Diesel PM for the SoCalEJ dataset in Leaflet. @fig-DPM is the result.
 
 ```{r}
 #| label: fig-DPM

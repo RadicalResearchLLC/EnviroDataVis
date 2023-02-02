@@ -99,9 +99,9 @@ unzip(zipfile = 'calenviroscreen40shpf2021shp.zip', exdir = directory)
 
 ```
 
-Check the *Files* panel. Check for a new **CalEJ4** folder; @fig-codeUnzip shows how it looks on my machine.
+Check the *Files* panel. Check for a new **CalEJ4** folder; @fig-panel3 shows how it looks on my machine.
 
-![Another Shapefile folder is in the working directory!](/images/double.png){#fig-codeUnzip} 
+![Another folder is in the working directory!](/images/double.png){#fig-panel3} 
 ### Import the Shapefile
 
 The `sf` library is used to import geospatial data. The `read_sf()` is great at read and identifying the type of spatial file.

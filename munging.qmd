@@ -141,7 +141,7 @@ SoCal_narrow %>%
 - `select()` can be applied to subsets column number or name.
 - `select()` also has some pattern matching helpers.  
 
-@sec-research included an example of using `select()` on the Toxics Release Inventory dataset. It also demonstrate using `clean_names()` and `filter()` as part of the import process. The raw dataset is MESSY! 
+@sec-EJTheory included an example of using `select()` on the SoCalEJ dataset. The raw dataset is MESSY! 
 
 ```{r}
 #| label: import TRI
