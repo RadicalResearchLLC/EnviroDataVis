@@ -104,6 +104,7 @@ First, load libraries, then import the dataset.
 
 library(sf)
 library(tidyverse)
+library(ggthemes)
 
 ```
 
@@ -141,7 +142,7 @@ Make a facet plot to show many indicator maps centered around Pitzer College as 
 
 ggplot(data = SoCal_SocioEc, aes(fill = percent)) +
   geom_sf(color = 'gray60', size = 0) +
-  theme_minimal() +
+  theme_map() +
   facet_wrap(~indicator, nrow = 3) +
   #scale_fill_viridis_c(option = 'F', direction = -1, alpha = 0.8) +
   scale_fill_gradient2(low = 'white', mid = 'grey70', high = '#720000', midpoint = 65) +
