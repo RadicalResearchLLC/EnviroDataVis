@@ -12,8 +12,8 @@ This includes the list of assignments for Unit 2 - Environmental Justice
 library(dplyr)
 library(kableExtra)
 
-assignment <- c('Wiki entry on Environmental Justice', 'EJScreen Exploration',
-                'CalEnviroScreen Exploration', 'Bullard et al., 2013 - Living on the Frontline of Environmental Assault', 'ProPublica - Sacrifice Zones',
+assignment <- c('Wiki on Environmental Justice', 'EJScreen Exploration',
+                'CalEnviroScreen Exploration', 'Bullard et al., 2013', 'ProPublica - Sacrifice Zones',
                 'Importing Data in R - RMRWR - Chapter 5.1 and 5.2')
 due.Date <- c('February 8, 2023', 'February 10, 2023', 'February 10, 2023', 'February 15, 2023', 'February 17, 2023', 'February 22, 2023')
 source <- c('https://en.wikipedia.org/wiki/Environmental_justice',
@@ -31,25 +31,25 @@ unit2 %>% mutate(link = cell_spec(row.names(.), 'html', link = source)) %>%
 
 ```
 
-## Graded Assignment - EJ Visualization 
+## Graded Assignment - EJ Visualization
 
 Choose an environmental justice dataset. Three options we've discussed in class are:
 
-* [CalEnviroScreen](https://oehha.ca.gov/media/downloads/calenviroscreen/document/calenviroscreen40shpf2021shp.zip) - WARNING - 20+Mb zip file
-* [EPA EJScreen](https://gaftp.epa.gov/EJSCREEN/2021/EJSCREEN_2021_USPR.gdb.zip) - WARNING - 480+ Mb zip file
-* [CDC & ATSRD EJI tool](https://experience.arcgis.com/experience/10788c3e860d489e9e8a63a2238bb63d) - state level downloads - pick geoJSON format for maps!
+-   [CalEnviroScreen](https://oehha.ca.gov/media/downloads/calenviroscreen/document/calenviroscreen40shpf2021shp.zip) - WARNING - 20+Mb zip file
+-   [EPA EJScreen](https://gaftp.epa.gov/EJSCREEN/2021/EJSCREEN_2021_USPR.gdb.zip) - WARNING - 480+ Mb zip file
+-   [CDC & ATSRD EJI tool](https://experience.arcgis.com/experience/10788c3e860d489e9e8a63a2238bb63d) - state level downloads - pick geoJSON format for maps!
 
-If data downloads are not something you are comfortable with, it is perfectly ok to use the in-class `SoCalEJ` dataset we have used as an example for in-class coding assignments. 
+If data downloads are not something you are comfortable with, it is perfectly ok to use the in-class `SoCalEJ` dataset we have used as an example for in-class coding assignments.
 
 The assignment is to create a new visualization or remix of a visualization using some of the data from the chosen EJ dataset. Visualization options include:
 
-1. Leaflet map(s)
-2. ggplot geom_sf map(s)
-3. ggplot figure(s) using some other geom (boxplot, point, bar, histogram)
-4. Some combination of 1, 2, and 3
+1.  Leaflet map(s)
+2.  ggplot geom_sf map(s)
+3.  ggplot figure(s) using some other geom (boxplot, point, bar, histogram)
+4.  Some combination of 1, 2, and 3
 
-Points will be awarded for successfully generating a unique visualization, for having made four distinct visualization choices that are different from the standard tool, and for documenting those four unique features in the accompanying email, or as commented text within the `.R script` file you submit as part of the assignment. Note, the goal is to make an attractive figure, not a super ugly one.  Choices that do not aid in improving the feature for the audience will not be considered on point. For example, making the font enormous or tiny is a negative feature. 
+Points will be awarded for successfully generating a unique visualization, for having made four distinct visualization choices that are different from the standard tool, and for documenting those four unique features in the accompanying email, or as commented text within the `.R script` file you submit as part of the assignment. Note, the goal is to make an attractive figure, not a super ugly one. Choices that do not aid in improving the feature for the audience will not be considered on point. For example, making the font enormous or tiny is a negative feature.
 
-In other words, the goal is to make a _better_ visualization, not just a **different** visualization. When describing the four feature changes, describe in one sentence why the features _improve_ the visualization.  
+In other words, the goal is to make a *better* visualization, not just a **different** visualization. When describing the four feature changes, describe in one sentence why the features *improve* the visualization.
 
-Assignment is currently due **February 24th, 2023** at the beginning of class (9:45 AM). Please send the `.R script` and an exported visualization via email. This assignment is worth 100 points. Coding style will not be graded. Scripts will be used to reproduce the figure on my local machine - deviations between code and exported figure will likely result in deducted points. 
+Assignment is currently due **February 24th, 2023** at the beginning of class (9:45 AM). Please send the `.R script` and an exported visualization via email. This assignment is worth 100 points. Coding style will not be graded. Scripts will be used to reproduce the figure on my local machine - deviations between code and exported figure will likely result in deducted points.
