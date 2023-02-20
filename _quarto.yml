@@ -23,6 +23,7 @@ book:
       - EJtheory.qmd
       - context.qmd
       - EJtools.qmd
+      - aviation.qmd
       - EJdata.qmd
       - assignment2.qmd
     - part: data.qmd
