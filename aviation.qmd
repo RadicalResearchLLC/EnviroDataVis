@@ -20,9 +20,10 @@ A cumulative impacts analysis identifies the past, present, and probable future 
 
 The [Warehouse CITY tool](https://radicalresearch.shinyapps.io/WarehouseCITY/) is designed to do exactly this.  However, it only includes the existing (i.e., past and present) warehouses.  It does not include the probable future projects.
 
-Within 3.1 miles (5 km) of the project, the tool indicates that there are already 1740+ acres of warehouses. Using the default warehouse floor-area-ratio assumption of 0.65, and a truck trip generation rate of 0.67 trucks per 1000 square feet of warehouses, this results in an estimate of over 30,000 truck trips daily from this region. @fig-AGSParea shows the outputs.  You can alter the circle size or move the starting point and see how sensitive the estimate is to the default assumptions. Also, you can zoom in with aerial imagery and see that a few warehouses aren't identified in this analysis. 
+Within 3.1 miles (5 km) of the project, the tool indicates that there are already 1740+ acres of warehouses. Using the default warehouse floor-area-ratio assumption of 0.65, and a truck trip generation rate of 0.67 trucks per 1000 square feet of warehouses, this results in an estimate of over 30,000 truck trips daily from this region. @fig-AGarea shows the output.  You can alter the circle size or move the starting point and see how sensitive the estimate is to the default assumptions. Also, you can zoom in with aerial imagery and see that a few warehouses aren't identified in this analysis. 
 
-![Existing warehouses around Airport Gateway](images/AGSParea.png){#fig-AGSParea}
+![Existing warehouses around Airport Gateway](images/AGSParea.png){#fig-AGarea}   
+  
 ## Visualization - Drawing a Polygon
 
 Note, this is the least sophisticated approach possible.  There are almost certainly machine-learning ways to do this systematically, but I am not an image processing expert. If any of you have desire to do more, I can point you to some resources for this. If you figure it out, the military and rich developers will want to employ you.     
@@ -102,10 +103,10 @@ The `geom` is the geometry. Three functions are applied - `list()` which convert
 Polygons always have to start and end with the same vertex to be a closed loop.   
 :::
 
-Now we should display it to make sure it looks correct. @fig-AirportGatewayLeaflet
+Now we should display it to make sure it looks correct. @fig-AirportGatewayLeaflet shows the attempt.  
 
 ```{r}
-#| label: AirportGatewayLeaflet 
+#| label: fig-AirportGatewayLeaflet 
 #| fig-cap: Airport Gateway polygon check
 #| echo: true
 
@@ -116,8 +117,7 @@ leaflet() %>%
               fillOpacity = 0.6,
               weight = 1)
 ```
-
-
+  
 That looks pretty close.  
 
 Now let's add the warehouse layer from last week to see it in context of the existing warehouses.  
