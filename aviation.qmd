@@ -130,7 +130,7 @@ First import the warehouse dataset. Unlike last week, we'll include only **San B
 
 WH.url <- 'https://raw.githubusercontent.com/RadicalResearchLLC/WarehouseMap/main/WarehouseCITY/geoJSON/finalParcels.geojson'
 warehouses <- st_read(WH.url) %>% 
-  filter(county == 'San Bernardino') %>% 
+  filter(county %in% c('San Bernardino', 'Riverside')) %>% 
   st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84")
 
 ```
@@ -194,4 +194,47 @@ Steps for adding a warehouse -
 7. If everything is good, we'll add it to a [google doc](https://docs.google.com/document/d/1bn4vgBvrvGYUmMoqq2bOYl3syb13dOvv_woed4-0vWI/edit) to combine the warehouse polygons and make a mega-map
 
 
+### Update - Planned Warehouses Map
 
+Here's the current geospatial file with the planned warehouses in the region.  This is a great resource that is going to make a big difference in future EIR responses!
+
+I've uploaded the current best list and the method for generating it to [github](https://github.com/RadicalResearchLLC/PlannedWarehouses). The `geojson` file and current map is [here](https://github.com/RadicalResearchLLC/PlannedWarehouses/blob/main/plannedWarehouses.geojson).  Access the file using this code.
+
+```{r}
+#| echo: true
+#| warning: false
+
+plannedWH.url <- 'https://raw.githubusercontent.com/RadicalResearchLLC/PlannedWarehouses/main/plannedWarehouses.geojson'
+plannedWarehouses <- st_read(plannedWH.url) %>% 
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84")
+
+```
+Let's load htmltools to allow for cool mouseover label interactivity.  
+
+
+```{r}
+
+library(htmltools)
+
+```
+
+And now let's make a map showing existing and planned warehouses.  @fig-BadWH shows the result.  
+
+```{r}
+#| label: fig-BadWH 
+#| fig-cap: The current best map of warehouses in the IE in the whole world
+#| echo: true
+
+leaflet() %>% 
+  addTiles() %>% 
+  addProviderTiles(provider = providers$CartoDB.Positron) %>% 
+  addPolygons(data = plannedWarehouses,
+              color = 'purple',
+              fillOpacity = 0.6,
+              weight = 1,
+              label = ~htmlEscape(name)) %>% 
+  addPolygons(data = warehouses,
+              color = 'brown',
+              weight = 1) %>% 
+  setView(lng = -117.3, lat = 34, zoom = 10)
+```
