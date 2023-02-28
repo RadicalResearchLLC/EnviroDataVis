@@ -25,6 +25,7 @@ book:
       - EJtools.qmd
       - aviation.qmd
       - EJdata.qmd
+      - debt.qmd
       - assignment2.qmd
     - part: data.qmd
       chapters:
@@ -32,6 +33,7 @@ book:
       - export.qmd
       - munging.qmd
       - import3.qmd
+      - assignment3.qmd  
   appendices: 
     - syllabus.qmd  
     - tools.qmd

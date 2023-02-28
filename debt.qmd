@@ -1,0 +1,145 @@
+# Ecological Debt {#sec-debt}
+
+::: {.callout-note appearance="simple"}
+Today we will focus on the basics of Ecological Debt.
+:::
+
+## Definition
+
+The accumulation of obligations through inequitable resource exploitation, pollution, and habitat degradation.  This is most commonly associated with the disequilibrium in the global North who overexploit the global commons and thus owe an **ecological debt** to those who underexploit those resources in the global South. This has been quantified through **climate debt** which examines emissions differentials in carbon budgets and adaptation costs which will accrue primarily to poorer countries. It also includes historical negative externalities (pollution, resource depletion) in economic development such as pollution and resource extraction in rich developed countries.
+
+## Mono Lake Case Study
+
+A local example of ecological debt within the state of California is the transfer of water from the mountains and reservoirs of Northern California and the Eastern Sierras to the Southern California. One prominent example of the ecological harm is [Mono Lake](https://www.monolake.org/). @fig-Mono shows the location of Mono Lake.  
+
+```{r}
+#| label: fig-Mono
+#| echo: true
+#| fig-cap: Map of Mono Lake
+
+library(leaflet)
+
+# Hat tip to Ian for this Minimap code! Really nice for showing the bigger picture!
+leaflet() %>% 
+  addTiles() %>% 
+  addProviderTiles(provider = providers$Esri.WorldImagery) %>% 
+  setView(lng = -118.98, lat = 38.0086, zoom = 9) %>% 
+  addMiniMap(width = 100,
+             height = 100)
+
+```
+
+Mono Lake is part of the Owens Valley in the Eastern Sierra. Surface flow diversions and sustained groundwater pumping that started in 1905 in the Owens Valley provides up to 75% of the annual water supply for Los Angeles through the LA aqueduct. That water diversion has dropped the level of Mono Lake, increasing salinity and causing extreme dust storms (particulates - PM~10~) from the exposed salts of the dried lakebed. @fig-LakeElev shows the levels of Mono Lake over time and the timing of the State Water Board Decision to restore lake levels.
+
+![Mono Lake water elevation over time](https://www.monolake.org/wp-content/uploads/2022/05/rainbow-graph-771x663.jpg){#fig-LakeElev}
+
+### Data 
+
+* Lake levels
+* Historical water use along the LA aqueduct
+* Owens Valley PM~10~ concentrations
+
+## Ecological Footprint and Biocapacity 
+
+The [Global Footprint Network](https://www.footprintnetwork.org/) attempts to identify the ecological footprint of individuals and countries.  
+
+### Definitions
+
+#### Ecological Footprint
+
+A measure of the area of _biologically productive land and water_ required to (1) produce all the resources consumed by an individual, population, or activity and (2) absorb the waste generated. Units are in _global hectares_.  A hectare is 100 acres or 10,000 m^2^.   
+
+#### Biocapacity
+
+A measure of the capacity of an ecosystem to regenerate biological resources. Biocapacity can change over time as a result of climate and management practices. It is calculated by multiplying _area_ by _yield factor_ and an _equivalence factor_ and is measured in _global hectares_.   
+
+#### Global hectares
+
+Global hectares are a measure of area weighted by the biological productive of the landtype. Global hectare is an earth averaged unit, but it may vary slightly over time because of changes in climate and management practices.  
+
+#### Ecological Deficit
+
+The difference between the _Biocapacity_ and _Ecological Footprint_ of a region or country. When the footprint exceeds the biocapacity, a region or country runs an annual ecological deficit. Cumulative ecological deficits (and/or reserves) are the Ecological Footprint Networks measure of **Ecological Debt**.  
+
+### Ecological Debt Case Study
+
+The [Footprint scenario tool](https://www.footprintnetwork.org/resources/footprint-scenario-tool/) is a measure of ecological debt in units of "Earth Debt". Instead of comparing regions with local deficits or reserves, this tool estimates the cumulative ecological debt accumulated globally. It is a measure of the current _unsustainable_ biological resource extraction and waste generation.  
+
+## Los Angeles Water Supply
+
+LA County runs an annual water deficit, which requires large annual imports of water from multiple sources.  Let's try to quantify these flows.
+
+Let's start with the supply of water data from the city of Los Angeles.  
+
+Here is a [LADWP water supply in acre-feet.](https://data.lacity.org/City-Infrastructure-Service-Requests/LADWP-Water-Supply-in-Acre-Feet/qyvz-diiw/data)
+
+```{r}
+#| label: acquire LA City water data
+#| echo: true
+library(janitor)
+library(tidyverse)
+
+H2O_data <- read_csv('https://data.lacity.org/api/views/qyvz-diiw/rows.csv?accessType=DOWNLOAD') %>% 
+  clean_names()
+
+```
+
+#### Plot water supply over time
+
+@fig-BarWater shows a simple bar chart of LA City water supply sources. Note that there is some fancy data manipulation first though. Also, there's a call to the `scales` package to make the x-axis label nicer.   
+
+```{r}
+#| label: fig-BarWater
+#| echo: true
+#| fig-cap: Water supply trends for LA City
+
+H2O_data %>% 
+  select(1, 3:6) %>% 
+  pivot_longer(names_to = 'parameter', values_to = 'acreFeet', cols = 2:5) %>% 
+  mutate(date_value = lubridate::mdy_hms(date_value)) %>% 
+  ggplot(aes(x = date_value, y = acreFeet, fill = parameter)) +
+    #geom_line() +
+    #geom_point() +
+    geom_bar(stat = 'identity') +
+    theme_bw() +
+    scale_x_datetime(labels = scales::label_date_short(), date_breaks = '5 years') +
+    labs(x = '', y = 'Supply in Acre Feet')
+  
+```
+
+### Visualize Aqueducts in California
+
+California Natural Resources Agency Open Data portal has an [aqueduct layer](https://data.cnra.ca.gov/dataset/i12-canals-and-aqueducts-local1).
+
+Here's the stepwise way to acquire and put this data for use.  We'll cover this in detail in the import lecture.  
+
+1. Download file - mine was named `i12_Canals_and_Aqueducts_local.geojson`
+2. Move to working directory
+3. Read file using `read_sf()`
+4. Transform file to WGS84 using `st_transform()`
+5. Make a map using `leaflet()` as shown in @fig-aqueducts - 
+6. Refine map to only show aqueducts that serve LA County - a 5 minute attempt is shown here, getting it right may require [research](https://www.watereducation.org/aquapedia/california-aqueduct)
+
+```{r}
+#| label: fig-aqueducts
+#| echo: true
+#| fig-cap: Aqueducts providing water to LA county
+
+library(sf)
+library(leaflet)
+library(htmltools)
+
+aqua <- read_sf(dsn = 'i12_Canals_and_Aqueducts_local.geojson') %>% 
+   st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") 
+
+#Team Debt needs to fill this in.
+LACounty_aqua <- c('Main Canal', 'Los Angeles Aqueduct', 'Colorado River Aqueduct')
+
+aqua %>% 
+  filter(Name %in% LACounty_aqua) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addPolylines(weight = 2,
+              label = ~htmlEscape(Name))
+```
+
