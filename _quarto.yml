@@ -34,7 +34,8 @@ book:
       - munging.qmd
       - import3.qmd
       - assignment3.qmd  
-    - part:  projects.qmd   
+    - part: projects.qmd  
+      chapters: 
       - shiny.qmd  
       - markdown.qmd  
       - research.qmd  
