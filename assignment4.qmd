@@ -1,0 +1,99 @@
+# Assignments for Unit 4 - Projects {#sec-assignment4}
+
+::: {.callout-note appearance="simple"}
+This includes the list of assignments for Unit 4 associated with Projects.
+:::
+
+```{r}
+#| label: tbl-unit4assignments
+#| tbl-cap: Assignments from Unit 4
+#| echo: false
+#| warning: false
+library(dplyr)
+library(kableExtra)
+
+assignment <- c('Haley et al., Historical Redlining and Present Air Pollution in US Cities')
+due.Date <- c('Oct 21, 2022')
+source <- c('https://pubs.acs.org/doi/pdf/10.1021/acs.estlett.1c01012')
+
+unit4 <- data.frame(assignment, due.Date, source)# %>% 
+
+unit4 %>% mutate(link = cell_spec(row.names(.), 'html', link = source)) %>% 
+  select(-source) %>% 
+  kableExtra::kable('html', escape = FALSE) %>% 
+  kable_material_dark(c('condensed', 'hover')) %>% 
+  column_spec(1, width = '20em') #%>
+
+```
+
+## Group Presentation 
+
+Due to present in class on **March 29, 2023**. Teams of approximately 8 students. End product is a 12 minute presentation in class using slides and data visualizations. 
+
+::: {.callout-note appearance="warning"}
+Absence from in-class presentation will need a Doctor's note or similar documentation to be able to make-up this assignment during Office Hours.
+:::
+
+It should include approximately:
+
+- 3 minutes of introduction and background
+- 3 minutes defining the scope of your Project
+  * Spatial extent (e.g., state of California)
+  * Temporal extent (i.e., year-range)
+  * Environmental variable(s) to be examined (air pollution, water, radiation, climate, etc.)
+- 3 minutes on what the team's hypothesis is and what data will be acquired for exploring that hypothesis.
+- 3 minutes on the visualization strategies that will help tell the story. What will the project look like (hand-drawn sketches or design mock-ups are fine).  
+
+### Grading for Group Presentation Project
+
+Total of 200 points.  
+
+* 50 points from other group members (participation grade - anonymous)
+* 75 points for quality of presentation slides
+  - 15 points for spelling/grammar/formatting
+  - 40 points for content, text, and visualizations
+  - 20 points for covering 4 topic areas
+* 75 points for presentation 
+  - 25 points for covering 4 topic areas
+  - 20 points for having approximately equal talking time among team members
+  - 30 points for content mastery and for answering questions from classmates and Professor Mike
+
+## Individual Visualization
+
+Due by email at 9:45 AM on **April 12, 2022**.  
+
+Assignment is a single visualization of data on the team's chosen topic. Assignment should provide an exported visualization `.png, .pdf, .html` and the `.R script` used to generate the visualization. Source of data should be clearly identified as a comment within the .R script.  
+
+Describe a minimum of three features that were selected to explore the dataset, either in the `.R script` or in the email.  Bullet points are fine.  
+
+## Grading for Individual Visualization Project
+
+Total of 150 points
+
+* 15 points for data source attribution 
+* 25 points for description of three features
+* 60 points for three features implementation in visualization
+* 20 points for aesthetics
+* 30 points for labels, legend, and in-visualization annotation 
+
+## Group Visualization
+
+Due by email at 9:45 AM on **April 28th, 2023 or May 3rd, 2023**
+
+Assignment is a visualization on the team's chosen topic. Assignment should provide an exported visualization `.png, .pdf, .html` and the `.R script` used to generate the visualization(s). Source(s) of data should be clearly identified as a comment within the .R script.  
+
+Describe a the features that were selected to explore the dataset, either in the `.R script` or in the email. Bullet points are fine.   
+
+Document in a single paragraph how the visualization shows the group theme (Food Sovereignty, Warehouses and Sensitive Receptors, Toxic Tailings, Invasive Species, or Plant Health). I want a brief story of how the visualization illustrates that. 
+
+## Grading for Group Visualization Project
+
+Total of 250 points
+
+* 30 points for data source attribution 
+* 30 points for description of features
+* 70 points for features implementation in visualization(s)
+* 30 points for aesthetics
+* 30 points for labels, legend, and in-visualization annotation 
+* 30 points for the visualization providing insight into the group theme
+* 30 points for group participation - (team grading)
