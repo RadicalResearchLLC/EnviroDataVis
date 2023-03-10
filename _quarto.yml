@@ -34,6 +34,12 @@ book:
       - munging.qmd
       - import3.qmd
       - assignment3.qmd  
+    - part:  projects.qmd   
+      - shiny.qmd  
+      - markdown.qmd  
+      - research.qmd  
+      - maps3.qmd
+      - assignment4.qmd  
   appendices: 
     - syllabus.qmd  
     - tools.qmd
