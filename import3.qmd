@@ -19,7 +19,7 @@ library(htmltools)
 
 ```
     
-I will also demonstrate the use of the [`tidycensus`] package. Install and load the `tidycensus` package.  
+I will also demonstrate the use of the `tidycensus` package. Install and load the `tidycensus` package.  
 
 ```{r}
 #| label: install tidycensus
@@ -58,7 +58,6 @@ Run the following line of code to activate your key for the session. The key is 
 # Replace <YOUR KEY HERE> with the key from the census data api service
 census_api_key('<YOUR KEY HERE>', install = TRUE)
 
-
 ```
 
 ```{r}
@@ -66,7 +65,7 @@ census_api_key('<YOUR KEY HERE>', install = TRUE)
 #| echo: false
 #| eval: false
 
-census_api_key('b5554d6b880d7233a664782c7931421460b3f82f', install = TRUE)
+#census_api_key('HIDDEN KEY', install = TRUE)
 
 ```
 
@@ -119,9 +118,10 @@ LA %>%
   st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") %>%
   leaflet() %>% 
   addTiles() %>% 
+  addProviderTiles(provider = providers$CartoDB.Positron) %>% 
   addPolygons(color = ~palIncome(estimate),
-              fillOpacity = 0.5,
-              weight = 1,
+              fillOpacity = 0.7,
+              weight = 0.5,
               label = ~htmlEscape(str_c('$',estimate))) %>% 
   addLegend(pal = palIncome,
             title = 'Median Income',
@@ -144,7 +144,7 @@ head(v20)
 
 ### Example 2 - Jefferson County, Texas - Racial variables
 
-Knowing income is nice, but a lot of the analysis was focused on racial variables.  Here's an example for Jefferson County, Texas to pull decennial census data on racial composition at the county census tract level. 
+Knowing income is nice, but a lot of the Environmental (in)Justice section was also focused on racial and ethnic variables.  Here's an example for Jefferson County, Texas to pull decennial census data on racial composition at the county census tract level. 
 
 ```{r}
 #| label: pull racial variables
@@ -169,6 +169,7 @@ JeffCo <- get_decennial(
 
 head(JeffCo)
 ```
+  
 Data looks good.  @fig-JeffCoRace shows a facet wrap display of the racial data. This is a very modest remix of the example from the `tidycensus` spatial data example for [Harris County](https://walker-data.com/tidycensus/articles/spatial-data.html).  
 
 ```{r}
@@ -179,6 +180,7 @@ Data looks good.  @fig-JeffCoRace shows a facet wrap display of the racial data.
 JeffCo %>%
   #Create a percent variable for the four racial categories
   mutate(percent = 100 * (value / summary_value)) %>%
+  #Make a ggplot map
   ggplot(aes(fill = percent)) +
   facet_wrap(~variable) +
   geom_sf(color = NA) +
@@ -243,48 +245,7 @@ CancerAlley %>%
 
 ```
 
-### Example 3. Air Toxics Monitoring Data
-
-I dropped a file in everyone's Box.  This is really just for the folks on Team Sacrifice.
-
-First, open the .RData file by selecting it and double-clicking it.  This should open a new RStudio session.  
-
-In the _Environment_ panel, there should now be a dataset named **annual_risk** with 108,343 observations of 20 variables.  Please **WHOOT** if that is present.
-
-The **annual_risk** table has cancer risk values in units of excess cases per million people. But it does not have site latitude and longitude information. The **site_list** table has that information. We can join those two files based on the _aqs_sitecode_ field which is common to both files.
-
-The code below is a lot of individual steps, most of which we have discussed before. @fig-Benzene shows the cancer risk at all US monitors that measured benzene for a full year in 2020.    
-
-```{r}
-#| label: fig-Benzene
-#| echo: true
-#| fig-cap: Benzene annual cancer risk at all valid 2020 measurement sites.
-
-load(url('https://github.com/RadicalResearchLLC/Toxics_dashboard/raw/master/ToxicsDashboard/.RData'))
-
-# the annual_risk dataset has cancer risk for all air toxics by year and site
-annual_risk %>% 
-  #joining to site_list to get lat/long and site name info
-  left_join(site_list) %>% 
-  #only keep the year 2019
-  filter(yr == 2019) %>% 
-  #only keep the parameter Benzene
-  filter(parameter == 'Benzene') %>% 
-  #make a map
-  leaflet() %>% 
-  addTiles() %>%
-  #show circles that are proportional to cancer risk with label hoverable label info 
-  addCircles(weight = 1, 
-             color = 'red',
-             #radius * 3000 was arrived at by trial and error - circles were too small with lower numbers
-             radius = ~cancerRisk * 3000, 
-             #paste() function used to show site name and cancer risk, round trims excess decimal point values
-             label = ~htmlEscape(paste(local_site_name, round(cancerRisk, 1))))
-
-```
-
-
-### Example 4 - [LA County Open Data Portal](https://data.lacounty.gov/search?categories=open%20data%2Chydro&q=water)
+### Example 3 - [LA County Open Data Portal](https://data.lacounty.gov/search?categories=open%20data%2Chydro&q=water)
 
 I looked through some of the sources of data the Debt Team was trying to access. I am not a water domain expert, so I wanted simpler data sources.  The LA County Open Data Portal has a set of Hydro data layers that may be of use.
 
@@ -307,39 +268,41 @@ groundH2O <- read_sf(dsn = 'Ground_Water_Basins_Feature_Layer.geojson') %>%
 groundH2O %>% 
   leaflet() %>% 
   addTiles() %>% 
-  addPolygons(weight = 2,
-              label = ~htmlEscape(BASIN))
+  addProviderTiles(provider = providers$Esri.WorldTerrain) %>% 
+  addPolygons(weight = 3,
+              label = ~htmlEscape(BASIN), 
+              fillOpacity = 0.1)
 
 ```
 
-### Example 5. Aqueducts in California
+### Example 4. Healthcare Facility Locations in California
 
-California Natural Resources Agency Open Data portal has an [aqueduct layer](https://data.cnra.ca.gov/dataset/i12-canals-and-aqueducts-local1).
+I found this [dataset of Healthcare Facility locations](https://data.chhs.ca.gov/dataset/healthcare-facility-locations/resource/098bbc36-044d-441f-9442-1f4db4d8aaa0) in California's Open Data portal.
 
-Repeat the steps from Example 4.  
+The page contains a direct URL to the spreadsheet. Unfortunately, it is a very long name and that breaks Windows naming ability which restricts pathnames to 256 characters, so I'll just show the manual method.
 
-1. Download file - mine was named `i12_Canals_and_Aqueducts_local.geojson`
+1. Download file - mine was named `health_facility_locations.xlsx`
 2. Move to working directory
-3. Read file using `read_sf()`
-4. Transform file to WGS84 using `st_transform()`
-5. Make a map using `leaflet()` as shown in @fig-aqueducts - 
-6. Refine map to only show aqueducts that serve LA County - a 5 minute attempt is shown here, getting it right may require [research](https://www.watereducation.org/aquapedia/california-aqueduct)
+3. Read file using `readxl::read_excel()`
+4. Make a map using `leaflet()` as shown in @fig-healthcareFacilities
+5. Add in `clusterOptions` argument to display grouped facilities at low zoom.
 
 ```{r}
-#| label: fig-aqueducts
+#| label: fig-healthcareFacilities
 #| echo: true
-#| fig-cap: Aqueducts providing water to LA county
+#| fig-cap: Licensed healthcare facilities in California
 
-aqua <- read_sf(dsn = 'i12_Canals_and_Aqueducts_local.geojson') %>% 
-   st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84") 
+healthcareF <- readxl::read_excel(path = 'health_facility_locations.xlsx') #%>% 
 
-#Team Debt needs to fill this in.
-LACounty_aqua <- c('Main Canal', 'Los Angeles Aqueduct', 'Colorado River Aqueduct')
-
-aqua %>% 
-  filter(Name %in% LACounty_aqua) %>% 
-  leaflet() %>% 
+leaflet() %>% 
   addTiles() %>% 
-  addPolylines(weight = 2,
-              label = ~htmlEscape(Name))
+  addMarkers(data = healthcareF,
+             lat = ~LATITUDE, 
+             lng = ~LONGITUDE,
+             clusterOptions = markerClusterOptions(),
+             label = ~htmlEscape(FACNAME))
 ```
+
+Reminder - latitude and longitude have to be defined as arguments in `leaflet` if they don't match the expected convention of `lat` and `lng`.  We could have renamed the values in the spreadsheet as an alternative.  
+
+The `clusterOptions` argument provides a nice grouping to make the map a bit less busy at zoomed out levels of the interactive map.  This can be useful for a busy dataset like this at a state level.  
