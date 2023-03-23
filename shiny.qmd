@@ -63,7 +63,7 @@ SoCalEJ <- st_read(URL.path) %>%
 
 ```
 
-Tidy the data by transforming it from a wide to a narrow dataset - much the same as in [Section 9.3](http://radicalresearch.llc/EDVcourse/EJdata.html#load-and-import-steps).
+Tidy the data by transforming it from a wide to a narrow dataset - much the same as in [Section 11.3 - Tidy and Transform](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/EJdata.html#tidy-and-transform).
 
 ```{r}
 #| label: transform dataset from wide to narrow
@@ -192,11 +192,11 @@ However, it will also break the figure below. That's ok because we're going to r
   
 #### Change the histogram output to **SoCal_narrow1** data
 
-Let's make a working figure. A histogram is fine as an example, but we'll do a ggplot following the style of [Figure 9.8](http://radicalresearch.llc/EDVcourse/EJdata.html#fig-histoPretty).
+Let's make a working figure. A histogram is fine as an example, but we'll do a ggplot following the style of [Figure 11.8](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/EJdata.html#fig-histoPretty).
 
 Let's use that code chunk from Lecture 9 as the basis for our new figure. The one thing we need to do is `filter()` the variable based on the user input. The user selected `input$metric` takes the selection from the dropdown menu and reacts whenever the user picks a different option. So instead of using a `filter` on a named variable like **DieselPM_P**, we have a reactive variable which the user can modify through the dropdown menu.
 
-We need to replace the original histogram output from lines 39-45 to our slightly modified `ggplot` code from Figure 9.8.
+We need to replace the original histogram output from lines 39-45 to our slightly modified `ggplot` code from Figure 11.8.
 
 ```{r}
 #| label: replace output

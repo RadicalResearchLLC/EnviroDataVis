@@ -38,7 +38,8 @@ book:
       chapters: 
       - shiny.qmd  
       - markdown.qmd  
-      - research.qmd  
+      - research.qmd
+      - enviroVoters.qmd
       - maps3.qmd
       - assignment4.qmd  
   appendices: 
