@@ -1,0 +1,287 @@
+# Animations - Two ways {#sec-animations}
+
+::: {.callout-note appearance="simple"}
+Today we focus on animating visualizations in R
+:::
+
+## Animations
+
+Visualizations that include movement are a another way of creating salience.  However,
+a bad animation doesn't add anything to the visualization and just requires more time to view the same information than a good information.  
+
+First, let's show a couple of examples using ``gganimate`` which works to extend the grammar of `ggplot2`.  Then we will also show a couple of examples using `shiny` and its `sliderInput()` animation.
+
+## Packages and libraries
+
+Install `gganimate` and `gifski`. Apple computers may default to image-magick, but I can't test that. 
+
+```{r}
+#| label: install gganimate and gifski
+#| eval: false
+#| echo: true
+
+install.packages('gganimate')
+install.packages('gifski')
+```
+
+Load libraries used for visualization today.
+
+```{r}
+#| label: load today's libraries
+#| eval: true
+#| echo: true
+
+library(tidyverse)
+library(sf)
+library(gganimate)
+library(gifski)
+library(leaflet)
+library(shiny)
+
+```
+
+## `[gganimate]`(https://gganimate.com/)
+
+### Contrived example - Keeling Curve at Mauna Loa
+
+In [Lecture 1](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/information.html#what-is-the-baseline) we plotted the growing concentration of CO~2~ at Mauna Loa, the famous Keeling Curve.  
+
+Let's revisit that. 
+
+First, import the data from NOAA CMDL.
+
+```{r}
+#| label: ImportCO2
+#| warning: false
+
+#read raw data
+co2 <- read_table('https://www.gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt',
+                  skip = 57 ) 
+#fix column headers
+fieldNames <- c('year', 'month', 'decDate', 'meanCO2', 'trendedCO2', 'days', 'stdev', 'unc')
+colnames(co2) <- fieldNames
+# check dataset back rows
+tail(co2)
+
+```
+
+Next, let's create a relatively simple visualization of the Keeling Curve using ggplot2.
+@fig-KeelingCurve shows the result. 
+
+```{r}
+#| label: KeelingCurve
+#| fig-cap: Concentration (ppm) of CO2 measured at Mauna Loa
+#| warning: false
+#| echo: true
+
+  ggplot(data = co2, aes(x = decDate, y = meanCO2)) +
+  geom_point(color = 'black', size = 1) +
+  theme_bw() +
+  labs(x = 'Year', y = 'Concentration of CO2 (ppm)', 'Keeling Curve @ Mauna Loa')
+```
+
+### Add in the animation steps
+
+In many environmental data sets, we will want to show changes over time. `gganimate` has a built-in function for time animations called `[transition_time()]`(https://gganimate.com/reference/transition_time.html).  
+
+Let's do the most super-basic animation and add that function to the Keeling Curve visualization. @fig-BasicAnimation shows the most basic animation  when adding a time increment.     
+
+```{r}
+#| label: BasicAnimation
+#| fig-cap: Animated Concentration (ppm) of CO2 measured at Mauna Loa
+#| warning: false
+#| echo: true
+
+ggplot(data = co2, aes(x = decDate, y = meanCO2)) +
+  geom_point(color = 'black', size = 1) +
+  theme_bw() +
+  labs(x = 'Year', y = 'Concentration of CO2 (ppm)', 'Keeling Curve @ Mauna Loa') +
+  transition_time(year)
+
+```
+Pretty cool, but we don't see the old data so it looks just like a migrating flock of points. If we want to show other points along the graph, we can use `shadow_mark()` to show other points along the graph. Arguments for past and future allow us to choose include either or both of those points.  
+
+`shadow_mark(past = TRUE, future = FALSE, ..., exclude_layer = NULL)`
+
+@fig-ShadowAnimation shows the result, while adding in a color argument to shadow_mark to show the old data differently.  
+
+```{r}
+#| label: ShadowAnimation
+#| fig-cap: Animated Concentration (ppm) of CO2 measured at Mauna Loa with shadowed past
+#| warning: false
+#| echo: true
+
+ggplot(data = co2, aes(x = decDate, y = meanCO2)) +
+  geom_point(color = 'black', size = 1) +
+  theme_bw() +
+  labs(x = 'Year', y = 'Concentration of CO2 (ppm)', 
+       title = 'Year: {frame_time}') +
+  transition_time(year) +
+  shadow_mark(past = TRUE, color = 'gray') 
+
+```
+Pretty close, but that Year title is horrible and the significant figures makes my brain hurt. I can and must fix that using the `round()` function.
+
+The interesting thing about that curly bracket notation is it can deal with variables and code directly. So let's modify that directly.  
+
+@fig-RoundYear shows the fixed title.  
+
+```{r}
+#| label: RoundYear
+#| fig-cap: Animated Concentration (ppm) of CO2 measured at Mauna Loa with shadowed past and rounded Year in title.
+#| warning: false
+
+ggplot(data = co2, aes(x = decDate, y = meanCO2)) +
+  geom_point(color = 'black', size = 1) +
+  theme_bw() +
+  labs(x = 'Year', y = 'Concentration of CO2 (ppm)', 
+       title = 'Year: {round(frame_time, 0)}') +
+  transition_time(year) +
+  shadow_mark(past = TRUE, color = 'grey') 
+
+```
+### Example 2: Animating a ggplot map
+
+Import warehouse data for Riverside County only - let's limit the scope.
+
+```{r}
+#| label: Import warehouses data for Riverside County
+#| warning: false
+#| echo: true
+
+WH.url <- 'https://raw.githubusercontent.com/RadicalResearchLLC/WarehouseMap/main/WarehouseCITY/geoJSON/finalParcels.geojson'
+plannedWH.url <- 'https://raw.githubusercontent.com/RadicalResearchLLC/PlannedWarehouses/main/plannedWarehouses.geojson'
+#import planned warehouses and add a dummy year built column
+plannedWarehouses <- st_read(plannedWH.url) %>% 
+  st_transform(crs = 4326) %>% 
+  mutate(year_built = 2025)
+#import warehouses for Riverside county
+warehouses <- st_read(WH.url) %>% 
+  filter(county == 'Riverside') %>% 
+  st_transform(crs = 4326) %>% 
+## Let's only show the last 40 years
+  mutate(year_built = ifelse(year_built < 1980, 1980, year_built)) %>% 
+  select(apn, year_built, geometry) %>% 
+  bind_rows(plannedWarehouses)
+
+
+head(warehouses)
+
+```
+Make a basic warehouse map near my house using ggplot and geom_sf.
+
+```{r}
+#| label: SimpleWHmap
+#| fig-cap: A simple map of warehouses near Mike's house
+#| warning: false
+#| echo: true
+
+ggplot(data = warehouses) +
+  geom_sf(color = 'brown') +
+  coord_sf(xlim = c(-117.35, -117.1),
+           ylim = c(33.8,33.95), crs = 4326) +
+  theme_void() 
+  
+```
+
+Let's animate it.  We'll add a second step to control the animation speed and frames.  First, we add `transition_time()` and `shadow_mark()` in a way identical to our CO~2~ figure.
+
+Pass the ggplot code chunk into a variable.  This variable is then run through an `animate()` function to control the frame rate and number of frames displayed.  
+
+@TS_WHmap shows the time series animation.  
+
+```{r}
+#| label: TS_WHmap
+#| fig-cap: An animated map of warehouses growing near Mike's house
+#| warning: false
+#| echo: true
+
+data4map <- ggplot(data = warehouses) +
+  geom_sf(color = 'brown', fill = 'brown') +
+  coord_sf(xlim = c(-117.35, -117.1),
+           ylim = c(33.8,33.95), crs = 4326) +
+  theme_void() + 
+  transition_time(year_built) +
+  shadow_mark(past = TRUE, color = 'grey20', fill = 'grey') +
+  labs(title = 'Year: {round(frame_time, 0)}')
+
+animate(data4map, nframes = 46, fps = 3, end_pause = 10)
+  
+```
+Excellent!  We can also add an underlying map of jurisdictions or a tile layer to make it a bit prettier. 
+
+We'll use `ggmap` and `get_stamenmap()` to provide a base map.
+
+```{r}
+#| label: PrettierMap
+#| fig-cap: An animated map of warehouses growing near Mike's house with a background layer
+#| warning: false
+#| echo: true
+library(ggmap)
+bkgd <- get_stamenmap(bbox = c(left = -117.35, 
+          bottom = 33.8, right = -117.1, top = 33.95),
+          zoom = 12,
+          maptype = 'toner-lite')
+
+data4map2 <- ggmap(bkgd) +
+  geom_sf(data = warehouses, color = 'black', fill = '#653503',
+          inherit.aes = FALSE) +
+  coord_sf(xlim = c(-117.35, -117.1),
+           ylim = c(33.8,33.95), crs = 4326) +
+  theme_void() + 
+  transition_time(year_built) +
+  shadow_mark(past = TRUE, color = '#653503', fill = 'grey') +
+  labs(title = 'Year: {round(frame_time, 0)}')
+
+animate(data4map2, nframes = 47, fps = 3, end_pause = 10)
+  
+```
+## Animations in Shiny using `sliderInput()` 
+
+### Example 3 - Animate Old Faithful Histogram
+
+Create a new shiny App called 'animate.R' as shown in [Section 19.3.2](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/shiny.html#fig-menuShiny).  
+
+This should create a new Shiny App using the Old Faithful Geyser data.  We're going to animate this using the following argument within the `sliderInput()` function.
+
+`animate = TRUE`.  
+
+The code chunk within the app should look like this, starting at line 21 on my machine:
+
+```{r}
+#| label: animate shiny app code chunk
+#| eval: false
+#| echo: true
+
+            sliderInput("bins",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30,
+                        # NEW ARGUMENT HERE!
+                        animate = TRUE)
+```
+
+If we run the app by pressing the Run App button, a shiny App should pop-up.  I'll show that within the Shiny App.  A blue **play** button will appear on the bottom-right of the slider. Pressing the play button advances through the slider increments and updates the histogram.  
+
+Easy!
+
+There are additional options for controlling the interval rate and whether it loops.  
+
+We can modify the code to show that.  
+
+```{r}
+#| label: animate shiny app code chunk
+#| eval: false
+#| echo: true
+
+            sliderInput("bins",
+                        "Number of bins:",
+                        min = 1,
+                        max = 50,
+                        value = 30,
+                        # NEW ARGUMENT HERE!
+                        animate = animationOptions(
+                          loop = TRUE, interval = 300)
+                        )
+```

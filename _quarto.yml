@@ -36,10 +36,11 @@ book:
       - assignment3.qmd  
     - part: projects.qmd  
       chapters: 
-      - shiny.qmd  
+      - shiny.qmd
+      - animate.qmd
+      - enviroVoters.qmd
       - markdown.qmd  
       - research.qmd
-      - enviroVoters.qmd
       - maps3.qmd
       - assignment4.qmd  
   appendices: 
