@@ -40,7 +40,7 @@ library(shiny)
 
 ```
 
-## `[gganimate]`(https://gganimate.com/)
+## [`gganimate`](https://gganimate.com/)
 
 ### Contrived example - Keeling Curve at Mauna Loa
 
@@ -69,7 +69,7 @@ Next, let's create a relatively simple visualization of the Keeling Curve using 
 @fig-KeelingCurve shows the result. 
 
 ```{r}
-#| label: KeelingCurve
+#| label: fig-KeelingCurve
 #| fig-cap: Concentration (ppm) of CO2 measured at Mauna Loa
 #| warning: false
 #| echo: true
@@ -87,7 +87,7 @@ In many environmental data sets, we will want to show changes over time. `gganim
 Let's do the most super-basic animation and add that function to the Keeling Curve visualization. @fig-BasicAnimation shows the most basic animation  when adding a time increment.     
 
 ```{r}
-#| label: BasicAnimation
+#| label: fig-BasicAnimation
 #| fig-cap: Animated Concentration (ppm) of CO2 measured at Mauna Loa
 #| warning: false
 #| echo: true
@@ -106,7 +106,7 @@ Pretty cool, but we don't see the old data so it looks just like a migrating flo
 @fig-ShadowAnimation shows the result, while adding in a color argument to shadow_mark to show the old data differently.  
 
 ```{r}
-#| label: ShadowAnimation
+#| label: fig-ShadowAnimation
 #| fig-cap: Animated Concentration (ppm) of CO2 measured at Mauna Loa with shadowed past
 #| warning: false
 #| echo: true
@@ -127,7 +127,7 @@ The interesting thing about that curly bracket notation is it can deal with vari
 @fig-RoundYear shows the fixed title.  
 
 ```{r}
-#| label: RoundYear
+#| label: fig-RoundYear
 #| fig-cap: Animated Concentration (ppm) of CO2 measured at Mauna Loa with shadowed past and rounded Year in title.
 #| warning: false
 
@@ -168,10 +168,10 @@ warehouses <- st_read(WH.url) %>%
 head(warehouses)
 
 ```
-Make a basic warehouse map near my house using ggplot and geom_sf.
+Make a basic warehouse map near my house using ggplot and geom_sf. @fig-SimpleWHmap shows a basic map of warehouses in ggplot.
 
 ```{r}
-#| label: SimpleWHmap
+#| label: fig-SimpleWHmap
 #| fig-cap: A simple map of warehouses near Mike's house
 #| warning: false
 #| echo: true
@@ -188,10 +188,10 @@ Let's animate it.  We'll add a second step to control the animation speed and fr
 
 Pass the ggplot code chunk into a variable.  This variable is then run through an `animate()` function to control the frame rate and number of frames displayed.  
 
-@TS_WHmap shows the time series animation.  
+@fig-TS_WHmap shows the time series animation.  
 
 ```{r}
-#| label: TS_WHmap
+#| label: fig-TS_WHmap
 #| fig-cap: An animated map of warehouses growing near Mike's house
 #| warning: false
 #| echo: true
@@ -210,10 +210,10 @@ animate(data4map, nframes = 46, fps = 3, end_pause = 10)
 ```
 Excellent!  We can also add an underlying map of jurisdictions or a tile layer to make it a bit prettier. 
 
-We'll use `ggmap` and `get_stamenmap()` to provide a base map.
+We'll use `ggmap` and `get_stamenmap()` to provide a base map. @fig-PrettierMap adds a background with some streets and labels.
 
 ```{r}
-#| label: PrettierMap
+#| label: fig-PrettierMap
 #| fig-cap: An animated map of warehouses growing near Mike's house with a background layer
 #| warning: false
 #| echo: true
@@ -249,7 +249,7 @@ This should create a new Shiny App using the Old Faithful Geyser data.  We're go
 The code chunk within the app should look like this, starting at line 21 on my machine:
 
 ```{r}
-#| label: animate shiny app code chunk
+#| label: animate shiny app code chunk 1
 #| eval: false
 #| echo: true
 
@@ -271,7 +271,7 @@ There are additional options for controlling the interval rate and whether it lo
 We can modify the code to show that.  
 
 ```{r}
-#| label: animate shiny app code chunk
+#| label: animate shiny app code chunk 2
 #| eval: false
 #| echo: true
 
