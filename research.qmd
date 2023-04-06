@@ -1,60 +1,53 @@
 # Research sites {#sec-research}
 
 ::: {.callout-note appearance="simple"}
-Today is just going to be research oriented
+Today is going to be a few examples from class Group Projects
 :::
 
-## California Water links
+## Food Insecurity
 
-[Los Angeles Department of Water and Power](https://www.ladwp.com/ladwp/faces/ladwp/aboutus/a-water/a-w-sourcesofsupply?_adf.ctrl-state=jm34e9std_4&_afrLoop=1092437083762566)
+The Food sovereignty group has a couple of datasets that need some spatial processing.  Here's a walkthrough of some spatial joins and statistics
 
-[LA DWP 2020 Water Report](https://www.ladwp.com/cs/groups/ladwp/documents/pdf/mdaw/nzyy/~edisp/opladwpccb762836.pdf)
-
-[SoCal MWD Water sources](https://www.mwdh2o.com/securing-our-imported-supplies)
-
-[California average precipitation by county](https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/county/mapping/4/pcp/201902/1/value)
-
-[Public Policy Institute Water Use in CA](https://www.ppic.org/publication/water-use-in-california/)
-
-[California Water Plan Update 2023](https://water.ca.gov/Programs/California-Water-Plan/Update-2023) Check out the assumptions and estimates [draft report](https://water.ca.gov/-/media/DWR-Website/Web-Pages/Programs/California-Water-Plan/Docs/Update2023/PrePRD/CWP-Draft-AE-2023.pdf)
-
-[California Natural Resources Agency Open Data](https://data.cnra.ca.gov/group/water)
-
-### Precipitation data - California by County
-
-Grab data from [NOAA NCEI](https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/county/mapping/4/pcp/202102/12/value) climate data and check out the drought intensity with a visualization of `precipitation anomaly`.
+### Load libraries
 
 ```{r}
 library(tidyverse)
+library(sf)
+library(leaflet)
+library(googlesheets4)
 ```
 
+Team Food Sovereignty found a nice resource on Food Insecurity from [Feeding America](https://www.feedingamerica.org/).  
+
+Here's the food insecurity dataset in a [google sheet](https://docs.google.com/spreadsheets/d/1OVvr9GnRItcDlrwM3JbxktHeaeLbi1nS/edit#gid=949936614)
+
+I can't read directly from this sheet because I don't have edit access, so I downloaded it to a spreadsheet.  I copied to my [own sheet](https://docs.google.com/spreadsheets/d/1ruW9toAaXyqQ3in57b-afeIzZmiP0K85_bKL47b3dTg/edit#gid=0).  I tried reading it in via `googlesheets4` package but that was causing weird errors, so I downloaded a .csv, moved it to the working directory and imported it that way.  
+
+I'll load the janitor library cause the column names on this worksheet are **horrible** Excel abominations.  
+
 ```{r}
-#| label: load library, download, prepare base figure
+#| label: load janitor
+#| warning: false
 #| echo: true
-#| eval: false
 
-county_precip <- read_csv('https://www.ncei.noaa.gov/cag/county/mapping/4-pcp-202102-12.csv', skip =3) %>% 
-  janitor::clean_names() %>% 
-  mutate(county = str_remove(location, ' County'))
-
-precip_points <- ggplot(data = county_precip, aes(x = x1901_2000_mean, y = anomaly_1901_2000_base_period)) +
-  #geom_point() + 
-  #geom_smooth(se = FALSE) +
-  geom_text(aes(label = county), size = 2, check_overlap = TRUE) +
-  theme_bw() +
-  labs(x = '1901-2000 precipitation average (inches)',
-       y = '2019 precipitation anomaly (inches)')
-
+library(janitor)
 ```
 
-```{r}
-#| label: fig-precipitation1
-#| fig-cap: Relationship of mean precipitation to rainfall deficit by county in 2019
-#| echo: true 
-#| eval: false
+Now read the data with `read_csv()`
 
-#precip_points
-ggplotly(precip_points)
+```{r}
+#| label: import food for California
+#| warning: false
+#| echo: true
+
+food <- read_csv('MMG2022_2020-2019_FeedingAmerica.xlsx - County.csv')  %>% 
+  ##Fix column names
+  clean_names() %>% 
+  ##select California data for 2020
+  filter(state == 'CA') %>% 
+  filter(year == 2020)
+
+head(food)
 
 ```
 
@@ -70,20 +63,16 @@ Doing this one time, point and click is ok. Here are the steps.
 -   Make a map (code)
 
 ```{r}
-#| label: unzip, read, and transform steps for CA county shapes
+#| label: read, and transform steps for CA county shapes
 #| echo: true
 
 CA_county_dir <- 'CA_counties'
-zipfile = 'ca-county-boundaries.zip'
-## Note, I tried extracting to CA_counties first, but it added a second 'CA_counties/CA_counties' subdirectory, so this code just extracts to the working directory
-unzip(zipfile, exdir = getwd())
-
-#load sf
-library(sf)
 
 #read the data
 CA_county <- read_sf(dsn = CA_county_dir) %>% 
  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84")
+
+head(CA_county)
 
 ```
 
@@ -97,7 +86,7 @@ CA_county <- read_sf(dsn = CA_county_dir) %>%
 
 ggplot(CA_county) +
   geom_sf() +
-  theme_minimal() + 
+  theme_void() + 
   geom_sf_text(aes(label = NAME), size = 1.5) +
   labs(x = '', y = '')
 
@@ -105,9 +94,9 @@ ggplot(CA_county) +
 
 ### Time for a quick data science lesson
 
-Dataset `CA_county` has the geospatial information. Dataset `county_precip` has the precipitation data but doesn't have the geospatial information included.
+Dataset `CA_county` has the geospatial information. Dataset `food` has the food insecurity data but doesn't have the geospatial information included.
 
-Putting the two datasets together is required to make the map to show spatial patterns in precipitation. Both datasets have a field that indicates the County Name. The `tidyverse` `dplyr` package has functions to [join datasets](https://dplyr.tidyverse.org/reference/mutate-joins.html) by common variables.
+Putting the two datasets together is required to make the map to show spatial patterns in food insecurity. Both datasets have a field that indicates the County Name. The `tidyverse` `dplyr` package has functions to [join datasets](https://dplyr.tidyverse.org/reference/mutate-joins.html) by common variables.
 
 -   `inner_join()` - keep only records present in both datasets.
 -   `left_join()` - keep **all** records from the *first* dataset and only matching variables from the second. Fill missing with **NA**
@@ -119,75 +108,59 @@ Putting the two datasets together is required to make the map to show spatial pa
 
 For the county case, California has 58 counties, but I will try an inner join to make sure that every county name matches.
 
+Note, the `food` dataset had an extra bit of text in its county column, we'll use a tiny bit of language parsing to chop that out so the columns will match **exactly**.
+
+The string we need to remove is ` County, California`. The function we want is `str_remove()` from `stringr` part of the base `tidyverse`.
+
+```{r}
+#| label: remove extraneous text
+#| echo: true
+#| warning: false
+
+food2 <- food %>% 
+  mutate(county = str_remove(county_state, ' County, California'))
+
+food2$county
+
+```
+Awesome!  Time for data science!
+
 ```{r}
 #| label: join county data
 #| echo: true
 #| eval: false
 
-GeoSpatial_precip <- inner_join(CA_county, county_precip,
-                                by = c('NAMELSAD' = 'location'))
+food_map <- inner_join(CA_county, food2,
+                                by = c('NAME' = 'county')) %>% 
+  mutate(pct_food_insecure = as.numeric(str_remove(overall_food_insecurity_rate_1_year, '%')))
 
-head(GeoSpatial_precip)
+head(food_map)
 
 ```
 
-@fig-MapPrecip shows the 1901-2000 precipitation average by county and the 2019 precipitation anomaly by county.
+@fig-foodMap shows the 1901-2000 precipitation average by county and the 2019 precipitation anomaly by county.
 
 ```{r}
-#| label: fig-MapPrecip
+#| label: fig-foodMap
 #| echo: true
-#| fig-cap: Average 20th century rainfall and 2019 rainfall anomaly from 100 year mean by county
+#| fig-cap: Number of food insecure persons by county
 #| eval: false
 
-GeoSpatial_precip %>% 
-  select(x1901_2000_mean, anomaly_1901_2000_base_period, 
-         county) %>% 
-  rename(meanPrecipitation = x1901_2000_mean,   precipitationAnomaly.2019 = anomaly_1901_2000_base_period ) %>% 
-  pivot_longer(cols = c(1,2), names_to = 'type', values_to = 'precip_in_inches') %>% 
-  ggplot(aes(fill = precip_in_inches)) +
+food_map %>% 
+  select(NAME, pct_food_insecure) %>% 
+  ggplot(aes(fill = pct_food_insecure)) +
   geom_sf(color = 'grey60') + 
-  facet_wrap(~type) +
- # scale_fill_distiller(palette = 'BrBG', type = 'div', direction = 1, name = 'Precipitation (inches)', mid = 0) +
-  scale_fill_gradient2() +
-  theme_minimal()
+  geom_sf_text(aes(label = NAME), size = 1.5, color = 'white') +
+  scale_fill_viridis_c() +
+  theme_void() +
+  labs(fill = 'food insecurity (%)')
 
 ```
 
-How much water didn't fall from the sky in 2019? I can estimate volumes if I have a county area. `st_area()` calculates the area and `mutate()` allows us to do some county level math to calculate volumes. Area X precipitation height = Volume. Google tells me that 1 inch is 0.0254 meters, to keep units consistent.
-
-```{r}
-#| label: data science volume calculations 
-#| echo: true
-#| eval: false
-
-calc_volume1 <- GeoSpatial_precip %>% 
-  select(county, anomaly_1901_2000_base_period) #%>% 
-
-calc_volume1$Area <- st_area(calc_volume1)
-
-calc_volume2 <- calc_volume1 %>% 
-  mutate(volume_m3 = as.numeric(anomaly_1901_2000_base_period * 0.0254 * Area))
-
-deficity <- calc_volume2 %>% 
-  ggplot(aes(fill = volume_m3)) +
-  geom_sf(color = 'grey60') + 
-  scale_fill_gradient2(name = '2019 Water deficit (m3)',
-                       labels = scales::comma_format()) +
-   geom_sf_text(aes(label = county), size = 1) +
-  theme_minimal() +
-  labs(x = '', y= '')
-
-deficity
-
-```
 
 ## Air Toxics Sacrifice Zones Resources
 
-[Ethylene oxide sterilization facilities](https://www.epa.gov/hazardous-air-pollutants-ethylene-oxide/ethylene-oxide-commercial-sterilization-facilities)
-
 [Toxics Release Inventory Data](https://www.epa.gov/toxics-release-inventory-tri-program/tri-basic-data-files-calendar-years-1987-present)
-
-[SCAQMD Ethylene oxide investigation](http://www.aqmd.gov/home/eto), including a [letter from last month](http://www.aqmd.gov/docs/default-source/compliance/sterigenics/ontario-phrlf-designation-letter-9-29-22.pdf?sfvrsn=8) designating the Ontario facility a 'high risk' facility. And there's a facility not yet reported on within 1 mile of my house.
 
 [National Air Toxics Dashboard](https://radicalresearch.shinyapps.io/ToxicsDashboard/)
 
