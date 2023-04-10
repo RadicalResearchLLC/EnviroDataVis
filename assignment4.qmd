@@ -38,7 +38,7 @@ Total of 200 points.
 
 ## Individual Visualization
 
-Due by email at 9:45 AM on **April 12, 2023**.  
+Due by email at 9:45 AM on **April 14, 2023**.  
 
 Assignment is a single visualization of data on the team's chosen topic. Assignment should provide an exported visualization `.png, .pdf, .html` and the `.R script` used to generate the visualization. Source of data should be clearly identified as a comment within the .R script.  
 

@@ -73,11 +73,10 @@ Let's see what the basic mines dataset looks like.
 
 leaflet() %>% 
   addTiles() %>% 
-  addCircleMarkers(data = U,
+  addMarkers(data = U,
                    lat = ~LATITUDE,
                    lng = ~LONGITUDE,
-                   clusterOptions = markerClusterOptions(),
-                   color = 'yellowgreen')
+                   clusterOptions = markerClusterOptions())
 
 
 ```
@@ -138,12 +137,13 @@ tribalLands <- sf::st_read(dsn = 'tl_2020_us_aitsn') %>%
 
 Make a simple map next.
 
-@fig-TribalLands shows the basic example.
+I am not displaying the basic example because my course website is limited to 100 MB, but the code does work.
 
 ```{r}
 #| label: fig-TribalLands
 #| echo: true
 #| fig-cap: Boundaries of Federally Recognized Tribal Subdivisions
+#| eval: false
 
 leaflet() %>% 
   addTiles() %>% 
@@ -163,7 +163,7 @@ That worked. Let's try to combine the Uranium mines map with the tribal lands of
 
 leaflet() %>% 
   addTiles() %>% 
-  addProviderTiles(provider = providers$Stamen.Terrain) %>% 
+  #addProviderTiles(provider = providers$Stamen.Terrain) %>% 
   setView(lng = -109.495, lat = 36.481, zoom = 7) %>% 
   addPolygons(data = tribalLands,
               weight = 1, 
@@ -238,39 +238,6 @@ Water in the MWD comes from three main sources.
 
 Now, there are three separate sources feeding into MWD supply. The Colorado River Aqueduct, the State Water Project, and the local sources.
 
-Can we show the relative magnitudes for each of the aqueducts on a map?
-
-Let's go get some aqueducts! We did this in [23.2.6](http://radicalresearch.llc/EDVcourse/import3.html#example-5.-aqueducts-in-california)
-
-```{r}
-#| label: aqueducts
-#| echo: true
-
-#CNRA GIS web link is here
-geojsonsource <- 'https://gis.data.cnra.ca.gov/datasets/b788fb2628844f54b92e46dac5bb7229_0/explore?location=36.266543%2C-119.240006%2C7.03'
-
-aqua3 <- read_sf(dsn = "i12_Canals_and_Aqueducts_local.geojson") %>% 
-    st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84")
-
-```
-
-@fig-aqueDucted shows the basic version of aqueducts feeding LA county water supply. Advanced version is possible!
-
-```{r}
-#| label: fig-aqueDucted
-#| echo: true
-#| fig-cap: Aqueducts supplying LA County water 
-
-LACounty_aqua <- c('Main Canal', 'Los Angeles Aqueduct', 'Colorado River Aqueduct')
-
-aqua3 %>% 
-  filter(Name %in% LACounty_aqua) %>% 
-  leaflet() %>% 
-  addTiles() %>% 
-  addPolylines(weight = 2,
-              label = ~htmlEscape(Name))
-```
-
 Calculate latest ten-year average water contribution from LA aqueduct and MWD sources. The table below shows the values.
 
 ```{r}
@@ -294,8 +261,4 @@ I can now overlay some markers or change the aqueduct thickness or think of some
 
 #### Optional Exercise #2
 
-Team Debt -
-
-1.  Add some markers to the source of the aqueducts with popup labels showing the magnitude of water
-2.  Add the aqueducts as separate polyline layers with separate weights to indicate relative flows?
-3.  What other way would you show this information? A [sankey](https://github.com/davidsjoberg/ggsankey) diagram?
+1.  What other way would you show this information? A [sankey](https://github.com/davidsjoberg/ggsankey) diagram?
