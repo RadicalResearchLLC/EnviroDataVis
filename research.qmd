@@ -122,33 +122,24 @@ food2 <- food %>%
 
 food2$county
 
-```
-Awesome!  Time for data science!
-
-```{r}
-#| label: join county data
-#| echo: true
-#| eval: false
-
 food_map <- inner_join(CA_county, food2,
                                 by = c('NAME' = 'county')) %>% 
   mutate(pct_food_insecure = as.numeric(str_remove(overall_food_insecurity_rate_1_year, '%')))
 
 head(food_map)
 
-```
 
-@fig-foodMap shows the 1901-2000 precipitation average by county and the 2019 precipitation anomaly by county.
+```
+Awesome! 
+
+@fig-MapInsecurity shows the percent food insecurity by county.
 
 ```{r}
-#| label: fig-foodMap
+#| label: fig-MapInsecurity
 #| echo: true
-#| fig-cap: Number of food insecure persons by county
-#| eval: false
+#| fig-cap: Percent of food insecure persons by county
 
-food_map %>% 
-  select(NAME, pct_food_insecure) %>% 
-  ggplot(aes(fill = pct_food_insecure)) +
+  ggplot(data = food_map, aes(fill = pct_food_insecure)) +
   geom_sf(color = 'grey60') + 
   geom_sf_text(aes(label = NAME), size = 1.5, color = 'white') +
   scale_fill_viridis_c() +

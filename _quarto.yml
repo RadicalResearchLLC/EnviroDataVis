@@ -41,7 +41,7 @@ book:
       - enviroVoters.qmd
       - research.qmd
       - markdown.qmd  
-      - maps3.qmd
+      - maps4.qmd
       - assignment4.qmd  
   appendices: 
     - syllabus.qmd  
