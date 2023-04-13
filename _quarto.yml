@@ -40,8 +40,8 @@ book:
       - animate.qmd
       - enviroVoters.qmd
       - research.qmd
-      - markdown.qmd  
       - maps4.qmd
+      - markdown.qmd  
       - assignment4.qmd  
   appendices: 
     - syllabus.qmd  
