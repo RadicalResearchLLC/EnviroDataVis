@@ -42,6 +42,7 @@ book:
       - research.qmd
       - maps4.qmd
       - markdown.qmd  
+      - School_near_warehouses.qmd
       - assignment4.qmd  
   appendices: 
     - syllabus.qmd  

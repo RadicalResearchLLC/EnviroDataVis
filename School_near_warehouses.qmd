@@ -1,0 +1,237 @@
+# Advanced Spatial Analysis {#sec-Schools_near_warehouses}
+
+::: {.callout-note appearance="simple"}
+Today we will be focusing on the practice of fancy geospatial data analysis and visualization.
+:::
+
+## Load libraries 
+
+```{r}
+#| label: load libraries
+#| echo: true
+
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(htmltools)
+
+```
+
+## Data
+
+The school database from [California School Campus Database](https://www.californiaschoolcampusdatabase.org/). I have posted a cleaned up version for the Inland Empire to this class github.    
+
+```{r}
+#| label: import California School Data
+#| echo: true
+
+schoolURL <- 'https://raw.githubusercontent.com/RadicalResearchLLC/WarehouseAssemblyBill/main/IEschools.geojson'
+schools <- sf::read_sf(dsn = schoolURL) %>% 
+  st_transform(crs = 4326)
+
+head(schools)
+
+```
+
+@fig-Schools shows the location of school campuses in the Inland Empire
+
+```{r}
+#| label: fig-Schools
+#| echo: true
+#| fig-cap: Inland Empire public schools
+
+palGrades <- colorFactor(palette = 'Dark2', domain = schools$Level)
+
+leaflet() %>% 
+  addTiles() %>% 
+  setView(lat = 33.9, lng = -117.4, zoom = 9) %>% 
+  addProviderTiles(providers$CartoDB.PositronNoLabels) %>% 
+  addPolygons(data = schools,
+               color = ~palGrades(Level),
+               fillOpacity = 0.8,
+               weight = 2,
+               group = 'Schools',
+               label = ~htmlEscape(School)) %>% 
+  addLegend(data = schools,
+            pal = palGrades,
+            values = ~Level,
+            position = 'bottomleft')
+
+```
+
+Let's import the [planned Warehouse layer](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/aviation.html#update---planned-warehouses-map) for comparison. 
+
+I've shown the `quiet = TRUE` argument in st_read to remove the message import from `st_read()`
+
+```{r}
+#| label: import planned Warehouses
+#| echo: true
+
+plannedWH.url <- 'https://raw.githubusercontent.com/RadicalResearchLLC/PlannedWarehouses/main/plannedWarehouses.geojson'
+plannedWarehouses <- st_read(plannedWH.url, quiet = TRUE) %>% 
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84")
+```
+
+Add the planned warehouses next to the schools and zoom in a bit to the City of Fontana.
+
+@fig-plannedWHs shows the data for schools in the Inland Empire with planned warehouse projects.
+
+```{r}
+#| label: fig-plannedWHs
+#| echo: true
+#| fig-cap: Inland Empire public schools
+
+palGrades <- colorFactor(palette = 'Dark2', domain = schools$Level)
+
+leaflet() %>% 
+  addTiles() %>% 
+  setView(lat = 34, lng = -117.5, zoom = 11) %>% 
+  addProviderTiles(providers$CartoDB.PositronNoLabels) %>% 
+  addPolygons(data = schools,
+               color = ~palGrades(Level),
+               fillOpacity = 0.8,
+               weight = 2,
+               group = 'Schools',
+               label = ~htmlEscape(School)) %>% 
+  addLegend(data = schools,
+            pal = palGrades,
+            values = ~Level,
+            position = 'bottomleft') %>% 
+  addPolygons(data = plannedWarehouses,
+              color = 'black',
+              fillOpacity = 0.3,
+              weight = 2,
+              group = 'Planned and Approved Warehouses')
+
+```
+
+### Analysis
+
+Create a 1,000 foot buffer around planned warehouses.  The goal is to identify schools within a set distance of warehouses.
+
+The `st_buffer()` function can be used to create shape specific boundaries around polygons.
+
+```{r}
+#| label: create a buffer of 1,000 feet for this analysis
+#| echo: true
+
+buffWH1000 <- plannedWarehouses %>% 
+  #default units are meters, 304 m = 1000 ft
+  st_buffer(dist = 304)
+
+```
+
+@fig-Buffercheck shows the schools with their new buffer as a gray overlay.
+
+```{r}
+#| label: fig-Buffercheck
+#| echo: true
+#| fig-cap: Testing buffer around schools to make sure the calculation and distance looks right
+
+leaflet() %>% 
+  addTiles() %>% 
+  addProviderTiles(provider = providers$CartoDB.PositronNoLabels) %>% 
+  setView(lat = 34, lng = -117.5, zoom = 12) %>% 
+  addPolygons(data = buffWH1000,
+              fillOpacity = 0.4,
+              color = 'gray',
+              weight = 1,
+              group = '1000 foot buffer') %>% 
+    addPolygons(data = plannedWarehouses,
+              color = 'black',
+              fillOpacity = 0.3,
+              weight = 2,
+              group = 'Planned and Approved Warehouses') %>% 
+  addPolygons(data = schools,
+               color = ~palGrades(Level),
+               fillOpacity = 0.8,
+               weight = 2,
+               group = 'Schools',
+               label = ~htmlEscape(School)) %>% 
+  addLegend(data = schools,
+            pal = palGrades,
+            values = ~Level,
+            position = 'bottomleft') #%>% 
+```
+
+Alright, we have the two pieces - a buffered set of schools and a set of planned warehouses layer.  
+
+The next function we'll use is `st_join()`. `st_join()` is a spatial filter that joins records of one geospatial dataset (x) with another geospatial dataset (y) through spatial intersections.
+
+If the two spatial layers intersect (i.e., touch or overlap), the records will be returned.
+
+
+```{r}
+#| label: join warehouse buffer and schools
+#| echo: true
+
+nearWH1kSchools <- buffWH1000 %>% 
+  # join by things that intersect
+  st_join(schools, left = FALSE) %>% 
+  # remove doubled geometries
+  st_set_geometry(value = NULL) %>% 
+  # re
+  left_join(schools) %>% 
+  st_as_sf() %>% 
+  distinct()
+  
+```
+
+@fig-nearWHSchools shows the schools within 1,000 feet of planned warehouses.
+
+```{r}
+#| label: fig-nearWHSchools
+#| echo: true
+#| fig-cap: Schools within 1,000 feet of planned Warehouses in the Inland Empire
+
+leaflet() %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addProviderTiles(provider = providers$CartoDB.PositronNoLabels) %>% 
+  setView(lat = 34, lng = -117.5, zoom = 10) %>% 
+  addPolygons(data = nearWH1kSchools,
+               color = ~palGrades(Level),
+               fillOpacity = 0.4,
+               weight = 2,
+               group = 'Schools',
+               label = ~htmlEscape(School)) %>% 
+  addLegend(data = schools,
+            pal = palGrades,
+            values = ~Level,
+            position = 'bottomleft') %>% 
+  addPolygons(data = plannedWarehouses,
+            color = 'black',
+            fillOpacity = 0.3,
+            weight = 1,
+            group = 'Planned and Approved Warehouses') #%>% 
+
+
+```
+
+The table below shows a sortable table of schools within 1,000 feet of planned warehouses.
+
+I am using the `DT` package to make an interactive and sortable table.  
+
+```{r}
+#| label: select columsn for display in table
+#| echo: true
+ 
+narrowNearSchools <- nearWH1kSchools %>% 
+  st_set_geometry(value = NULL) %>% 
+  select(School, Level, District, City, name) %>% 
+  distinct() %>% 
+  rename(WarehouseName = name)
+
+```
+
+```{r}
+#| label: tbl-WHSchools
+#| echo: true
+#| tbl-cap: Schools within 1,000 feet of planned warehouses in the Inland Empire
+
+DT::datatable(narrowNearSchools,
+               rownames = FALSE,
+               options = list(dom = 'fp',
+                              pageLength = 15))
+```
+
