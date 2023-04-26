@@ -142,6 +142,7 @@ Now let's add the existing warehouses to the map. Let's also use `setView()` to 
 #| label: fig-moreWH 
 #| fig-cap: Airport Gateway project in context
 #| echo: true
+#| eval: false
 
 leaflet() %>% 
   addTiles() %>% 
@@ -163,6 +164,7 @@ Yikes, that underlying map is a bit too busy.  Let's switch to a different provi
 #| label: fig-finalWH 
 #| fig-cap: Airport Gateway project in bigger context with less busy map.
 #| echo: true
+#| eval: false
 
 leaflet() %>% 
   addTiles() %>% 
