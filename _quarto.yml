@@ -44,7 +44,7 @@ book:
       - markdown.qmd  
       - School_near_warehouses.qmd
       - assignment4.qmd
-      - kqed.qmd
+      - KQED.qmd
   appendices: 
     - syllabus.qmd  
     - tools.qmd
