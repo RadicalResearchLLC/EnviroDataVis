@@ -33,12 +33,13 @@ head(schools)
 
 ```
 
-@fig-Schools shows the location of school campuses in the Inland Empire
+fig-Schools would show the location of school campuses in the Inland Empire if I wasn't running out of space.
 
 ```{r}
 #| label: fig-Schools
 #| echo: true
 #| fig-cap: Inland Empire public schools
+#| eval: false
 
 palGrades <- colorFactor(palette = 'Dark2', domain = schools$Level)
 
@@ -74,7 +75,8 @@ plannedWarehouses <- st_read(plannedWH.url, quiet = TRUE) %>%
 
 Add the planned warehouses next to the schools and zoom in a bit to the City of Fontana.
 
-@fig-plannedWHs shows the data for schools in the Inland Empire with planned warehouse projects.
+fig-plannedWHs shows the data for schools in the Inland Empire with planned warehouse projects,
+or it would if I wasn't running out of space.
 
 ```{r}
 #| label: fig-plannedWHs
