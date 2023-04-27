@@ -1,0 +1,185 @@
+# heatmap {#sec-heatmap}
+
+::: {.callout-note appearance="simple"}
+Let's make a heatmap or two
+:::
+
+## Libraries
+
+The usual suspects.
+
+```{r}
+#| label: libraries
+#| echo: true
+#| warning: false
+#| message: false
+
+library(sf)
+library(tidyverse)
+library(leaflet)
+
+```
+
+## New Packages for today
+
+`leaflet.extras` - this has an `addHeatmap()` function for leaflet maps.
+`rmapshaper` - this has `ms_simplify()` to reduce the complexity of polygons and make them faster to render.
+
+```{r}
+#| label: install new packages
+#| echo: true
+#| eval: false
+
+install.packages(c('rmapshaper', 'leaflet.extras'))
+```
+
+```{r}
+#| label: load new packages
+#| echo: true
+#| eval: true
+#| warnings: false
+
+library(rmapshaper)
+library(leaflet.extras)
+```
+
+## Import Data
+
+Check Drop Box for a water hyacinth observation dataset from [CalFlora](https://www.calflora.org/) named `Eich_Data.csv` provided by Team Invasives.
+
+![Water Hyacinth - wikimedia](https://upload.wikimedia.org/wikipedia/commons/e/ee/Water_hyacinth.jpg)
+
+```{r}
+#| label: import water hyacinth data
+#| echo: true
+#| warnings: false
+
+waterHyacinth <- read_csv('Eich_Data.csv') %>% 
+  select(SciName, ObsDate, Latitude, Longitude)
+
+```
+
+## Make a simple Heatmap in Leaflet
+
+Instead of adding the 12,000+ markers directly, we will show the density of observations using a heatmap. The `addHeatmap()` in leaflet.extras is a pretty straightforward function.  The key arguments are `radius` and `blur`.  I'll show a map with some reasonable values for this dataset.
+
+@fig-heatLeaf shows the heatmap.
+
+```{r}
+#| label: fig-heatLeaf
+#| fig-cap: Heatmap of water hyacinth observations in California.
+#| echo: true
+
+leaflet() %>% 
+  addTiles() %>% 
+  addHeatmap(data = waterHyacinth,
+             radius = 10,
+             blur = 15)
+```
+
+### Exercise 1
+
+- Change the value of radius argument and see how the heatmap changes.
+- Change the value of blur argument and see how the heatmap changes
+- Add a `setView()` to the map and see how the heatmap changes at a non-default zoom setting.
+
+## Heatmaps 2 - ggplot methods for looking at small multiples.
+
+### Import California Counties data
+
+Import the county dataset from [lesson 22.1.1](https://mikem-radicalresearch.quarto.pub/environmental-data-visualization/research.html#load-libraries).
+
+```{r}
+#| label: import CA counties
+#| eval: true
+#| echo: true
+#| warnings: false
+
+CA_county <- read_sf(dsn = 'CA_counties') %>% 
+ st_transform(crs = 4326)
+```
+
+### Make a heatmap in ggplot
+
+The function `stat_density2d()` is used to make a heatmap in ggplot.
+
+@fig-densityHeat shows how that's done.
+
+```{r}
+#| label: fig-densityHeat
+#| fig-cap: Water hyacinth heatmap in ggplot 
+#| echo: true
+
+ggplot() +
+  geom_sf(data = CA_county, fill = 'white') +
+  geom_density_2d_filled(data = waterHyacinth,
+                  aes(x= Longitude,
+                      y= Latitude),
+             alpha = 0.8,
+             breaks = c(0.0001, 0.001, 0.01, 0.1, 1, 10, 100)) +
+  theme_void() +
+  labs(fill = 'Water hyacinth density')
+
+```
+There's a couple of wonky things about this map.  Defaults for the levels are pretty weird, so I had to add the breaks to show the density of observations in a more reasonable way.  
+
+### Exercise 2
+
+- Try out `stat_density_2d()`, `geom_density_2d()`, and/or `stat_density_2d_filled()` for variations.
+- Try different break levels and see how the map changes.
+
+## Facet_wrap with densities
+
+As always, combining methods makes this more usefu.
+
+The waterHyacinth data has some observations with dates. I wanted to do see how these change over time, but only 43 out of the 12000+ observations had reasonable years, so we're going to skip that as something that can be done with this dataset.  
+
+## Simplifying polygons
+
+One last example trick.  Another dataset Team invasives was working on was extreme in its polygons.  
+
+Here is a bit of code to tone that down and simplify the polygons for faster rendering maps.
+
+The data is from [California Freshwater Species Database](https://map.dfg.ca.gov/metadata/ds1197.html).  
+The `rmapshaper` package has a function called `ms_simplify()` which helps to make a simpler map for display.  
+
+```{r}
+#| label: show how ms_simplify makes it smaller
+#| echo: true
+#| warnings: false
+
+species <- sf::st_read(dsn = 'ds1197/ds1197.gdb',
+                       quiet = TRUE) %>% 
+  st_transform(crs = 4326)
+
+species2 <- ms_simplify(species)
+
+object.size(species)
+object.size(species2)
+
+```
+
+@fig-simple shows the simplified map.  
+
+```{r}
+#| label: fig-simple
+#| fig-cap: Vulnerable species counts
+#| echo: true
+#| warnings: false
+
+palSpecies <- colorNumeric(palette = 'OrRd',
+                            domain = species2$Vulnerable_Species_Count)
+
+leaflet() %>% 
+  addTiles() %>% 
+  addPolygons(data = species2,
+              weight = 0.1,
+              color =   ~palSpecies(Vulnerable_Species_Count),
+              fillOpacity = 0.6) %>% 
+  addLegend(data = species2,
+            title= 'Vulnerable Freshwater Species',
+            pal = palSpecies,
+            values = ~Vulnerable_Species_Count)
+
+```
+

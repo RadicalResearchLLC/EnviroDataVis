@@ -1,8 +1,12 @@
-# KQED  {#sec-kqed}
+# KQED {#sec-KQED}
 
 ::: {.callout-note appearance="simple"}
 Today I show an example of a map I made yesterday for NPR's KQED station in the Bay Area.
 :::
+
+## KQED NPR radio
+
+My neighbor Jen and Professor Phillips were on [KQED's California Report](https://www.kqed.org/news/11947728/warehouse-boom-focus-of-new-legislation-in-sacramento) talking about warehouses.    
 
 ## Libraries
 
